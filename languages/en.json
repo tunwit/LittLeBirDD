@@ -1,0 +1,342 @@
+{
+"translator":"SoftWhiTE",
+"commands":{
+    "reset_stats":{
+        "success":"Stats channel has been removed.",
+        "failed":"You has't create stats channel yet. Please  use `/setup_stats` to create.  ",
+        "requester":"Called by {user}"
+    },
+    "welcome":{
+        "wel":"ขอบคุณที่เชิญ LittleBirDD นะครับ ผมคือ Developer เอง บอทตัวนี้อยู่ในช่วง Beta Test ถ้ามีบัคก็สามารถเเจ้งมาได้ที่ `LittLe BirDD#0092` สามารถใช้คำสั่ง `.help` เพื่อดูคำสั่งทั้งหมด หรือ เเท็กบอทเพื่อดู Prefix ของเซิร์ฟเวอร์ได้นะคับ\n--------------------\nฝากถึงผู้ที่เชิญบอทเข้ามาเนื่องจากคุณเป็นผู้ทดลองใช้ สามารถทักมาที่ DM เพื่อขอสมาชิกพรีเมี่ยมได้เลยนะครับ >_<"
+    },
+    "setup_stats":{
+        "success":"Stats channel has been created.",
+        "failed":"You already have a stats channel.",
+        "requester":"Called by {user}.",
+        "allmember":"All members.",
+        "user":"๊User",
+        "bot":"Bot"
+    },
+    "setup_statsError":{
+        "failed":"You don't have the permission to using this command.",
+        "requester":"Called by {user}."
+    },
+    "check_before_play":{
+        "failed":"Failed ❌",
+        "novc":"Bot is currently not in the voice channel.",
+        "usernotin":"You aren't in the voice channel.",
+        "diffchan":"Bot is used by another voice channel.",
+        "requester":"Called by {user}."
+    },
+    "np":{
+        "nowplaying":"+++Bot is now playing+++",
+        "playingin":"playing on the channel.",
+        "duration":"Duration",
+        "nextqueue":"next song",
+        "nosonginqueue":"There is no songs in queue.",
+        "addedby":"Added by",
+        "andmore":"And more {more} songs.",
+        "fmt":"There is no songs in queue.",
+        "queue":"queue",
+        "unable_duration":"Unable to calculate"
+    },
+    "callback":{
+        "failed":"Failed ❌",
+        "error":"This command can only be used by Vip members.",
+        "on_wavelink_track_exception":"Error occurred, this song cannot be played.",
+        "playnolplaylist":"Your list is empty, use this command `/addplaylist <music>` to add it.",
+        "usernotin":"You aren't in the voice channel.",
+        "noresult":"The song you searched doesn't exist, try another song.",
+        "requester":"Called by {user}"
+    },
+    "addtoqueue":{
+        "added":"has been added to the queue.",
+        "addedby":"{user} added the song to the queue.",
+        "addplaylist":"Add playlist `{title}` {number} song."
+    },
+    "on_wavelink_track_end":{
+        "failed":"There is no songs to play. ❌",
+        "error":"No more songs added, I'll be disconnect.",
+        "requester":"Called by {user}."
+    },
+    "loop":{
+        "loopchanged":"็as switched to loop mode.",
+        "requester":"Called by {user}."
+    },
+    "resume":{
+        "resumed":"Resume the song.",
+        "requester":"Called by {user}."
+    },
+    "pause":{
+        "paused":"Pause the music temporary.",
+        "requester":"Called by {user}."
+    },
+    "skip":{
+        "skiped":"Skiped the current song.",
+        "skipedto":"Skiped the current song to the {to} song.",
+        "requester":"Called by {user}."
+    },
+    "dc":{
+        "dced":"Disconnected",
+        "requester":"Called by {user}."
+    },
+    "remove":{
+        "removed":"**`{deleted}`** has been deleted",
+        "remove_error":"Please check the deletion order again.",
+        "requester":"Called by {user}"
+    },
+    "shuffle":{
+        "shuffle":"Queue has been shuffle",
+        "requester":"Called by {user}"
+    },
+    "queueList":{
+        "more":"There are `{more}` songs left in the queue",
+        "playing":"now playing.",
+        "noplay":"**`no song playing`**",
+        "inqueue":"in queue.",
+        "nomorequeue":"**`There are no songs in the queue.`**",
+        "notupdate":"This message is not update upon playing"
+    },
+    "on_voice_state_update":{
+        "kick?":"Why you kick me? ❌",
+        "descript":"I'm touchy. 😤",
+        "noone":"There is no one left in the channel.  ❌",
+        "descript2":"No one is listening. I'll be disconnect.",
+        "requester":"Called by {user}."
+    },
+    "detact_levelup":{
+        "descript":"{mention} Congratulations, now you are at the level `{level}`!!."
+    },
+    "lv":{
+        "descript":"{mention} now you levels is `{level}`, and have experience `{exp}`, progress`{percantage}%`!!."
+    },
+    "toggle_lv":{
+        "descript":"Now the Level system has been changed  to **`{result}`**.",
+        "requester":"Called by {user}."
+    },
+    "gif":{
+        "failed":"Failed ❌",
+        "descript":"Something went wrong to creating Gif images.",
+        "requester":"Called by {user}."
+    },
+    "anime":{
+        "failed":"Failed ❌",
+        "descript":"Something went wrong to creating Gif images.",
+        "nsfw":"This command can only used in the **``NSFW``** channel.",
+        "requester":"Called by {user}."
+    },
+    "help":{
+        "mainmenu":"Main menu 🏠",
+        "descript":"If need help, press the button below to select the command menu ♥\n\n **Deverloper :** **``LittLe BirDD#0092``**\n **Website :** **``N/A``**.",
+        "invite":"Invite me to the discord.",
+        "songcom":"Song command 🎵",
+        "descriptsong":"This is command for me to turn on the music, whether it's a fun song. I can open it all.",
+        "play":"`Play a fun songs`",
+        "pause":"`Pause`",
+        "resume":"`Resume`",
+        "skip":"`Skip`",
+        "loop":"`Loop`",
+        "filters":"`Install filter to the track`",
+        "ql":"`View current list.`",
+        "remove":"`Remove the selected song from the list.`",
+        "dc":"`Disconnected`",
+        "crcom":"Random command 🎁",
+        "descriptcr":"This is a command for me to take commands from users and keep them randomly.",
+        "cr":"`Use random picker.`",
+        "cr_random":"`Randomize the options available.`",
+        "cr_list":"`View a list of random options.`",
+        "cr_remove":"`Remove an option from the list.`",
+        "cr_clear":"`Remove all option from the list.`",
+        "accom":"Activities & Others 🕹.",
+        "descriptac":"This is a command for you to create activities together, such as youtube or various board games.",
+        "activities":"`Create activities or play a game.`",
+        "gif":"`send animation.`",
+        "anime":"`Send the cutest picture.`",
+        "lyrics":"`Search for a specific song lyrics.`",
+        "vscom":"VIP member Ship 🔖",
+        "descriptvs":"Command for VIP member.",
+        "Lplaylist":"`Play songs that are in your private playlist.`",
+        "create_playlist":"`Create a private playlist.`",
+        "addplaylist":"`Add a playlist to your private playlist.`",
+        "remove_playlist":"`Remove selected songs from private playlist.`",
+        "clear_playlist":"`Remove all songs from my private playlist.`",
+        "ql_playlist":"`View songs in your private playlist.`",
+        "cfcom":"configure ⚙️",
+        "descriptcf":"This Commands used to manage the system in various servers.",
+        "toggle_lv":"Turn on-off the level system.`",
+        "lv":"`View your current level.`",
+        "setup_stats":"`Create a member count on the server.`",
+        "reset_stats":"`Remove the member count on the server.`",
+        "welcomemessage":"Set channel to alert when new member joined or leave",
+        "requester":"Called by {user}."
+    },
+    "activity":{
+        "chess":"Press the link to play Chess in the Park!!\n{link}",
+        "ocho":"Press the link to play Ocho!!\n{link}",
+        "poker":"Press the link to play poker night!!\n{link}",
+        "word":"Press the link to play word-snack!!\n{link}",
+        "watch":"Press the link to use Watch Together!!\n{link}"
+    },
+    "addplaylist":{ 
+        "failed":"Failed ❌",
+        "noresult":"The song you searched doesn't exist, try another song.",
+        "success":"Added`{title}` in your list.",
+        "notvip":"This command can only be used by VIP members.",
+        "requester":"Called by {user}."
+    },
+    "ql_playlist":{
+        "nolist":"You don't have a list. Use  **`addplaylist`** to create your list.",
+        "inlist":"List",
+        "success":"**` {fmt} `**",
+        "notvip":"This command can only be used by VIP members.",
+        "requester":"Called by {user}."
+    },
+    "remove_playlist":{
+        "nolist":"You don't have a list. Use **`addplaylist`** to create your list.",
+        "success":"**` {title} `**  has been removed from your list.",
+        "notvip":"This command can only be used by VIP members.",
+        "failed":"Failed ❌",
+        "descript":"Please check the deletion order again.",
+        "requester":"Called by {user}."
+    },
+    "clear_playlist":{
+        "success":"All your entries have been deleted.",
+        "failed":"This command can only be used by VIP members.",
+        "requester":"Called by {user}."
+    },
+    "cr":{
+        "activatechoice":"random selection at{i}(type'!?'to stop inserting an option.)",
+        "deactivatechoice":"Stop adding options currently. type 'cr_random' for random.",
+        "failed":"Failed ❌",
+        "nolist":"It can't be randomized at the moment because there are no items in the random list. Use command **``cr``** for random.",
+        "requester":"Called by {user}."
+    },
+    "cr_clear":{
+        "descript":"Now deleted all entries.",
+        "success":"Completed ✅",
+        "requester":"Called by {user}."
+    },
+    "cr_list":{
+        "nolist":"random list has **``0``** list.",
+        "descript":"There are currently do't have a list.",
+        "num":"random list has **``{x}``** list.",
+        "requester":"Called by {user}."
+    },
+    "cr_remove":{
+        "failed":"Failed ❌",
+        "descript":"Your list is empty. Use **`cr`** to create.",
+        "deleted":"**``{deleted}``** has been deleted.",
+        "requester":"Called by {user}."
+    },
+    "remove_error":{
+        "failed":"Failed ❌",
+        "descript":"Please check the deletion order again.",
+        "requester":"Called by {user}."
+    },
+    "lyrics":{
+        "failed":"Failed ❌",
+        "descript":"Can't find the lyrics you were looking for.",
+        "requester":"Called by {user}."
+    },
+    "filters":{
+        "title":"Applyed filter✅",
+        "Bassboost":"Filter ``Bassboost`` has been install✅",
+        "Piano":"Filter ``Piano`` has been install✅",
+        "Rotation":"Filter ``Rotation`` has been install✅",
+        "Increasespeed":"Filter ``Increasespeed`` has been install✅",
+        "Decreasespeed":"Filter ``Decreasespeed`` has been install✅",
+        "Reset":"``Reset`` all filters✅",
+        "requester":"Called by {user}"
+    },
+    "baned":{
+        "title":"You are baned ❌",
+        "descript":"You are being ban from using LittLeBirDD please contact developer",
+        "requester":"Called by {user}"
+    },
+    "alert":{
+        "video":"**{channel_name}** just uploaded new video let's check it out\n{url}",
+        "stream":"**{channel_name}** just live stream let's check it out\n{url}"
+    },
+    "notification":{
+        "descript":"Is this channel you wanted?",
+        "sub":"Subscriber",
+        "view":"View"
+    },
+    "remove_notificationove":{
+        "failed":"Failed ❌",
+        "removed":"**`{deleted}`** has been deleted",
+        "descript":"Please check the deletion order again.",
+        "requester":"Called by {user}"
+    },
+    "set_welcome":{
+        "title":"Successful ✅",
+        "descript":"This channel will recived welcome message when new member has join",
+        "requester":"Called by {user}"
+    },
+    "unset_welcome":{
+        "success":"Successful ✅",
+        "failed":"Failed ❌",
+        "descript_fail":"You dosen't have set channel yet",
+        "descript":"This channel will no longer recived welcome message when new member has join",
+        "requester":"Called by {user}"
+    },
+    "set_goodbye":{
+        "title":"Successful ✅",
+        "descript":"This channel will recived welcome message when new member has left",
+        "requester":"Called by {user}"
+    },
+    "unset_goodbye":{
+        "success":"Successful ✅",
+        "failed":"Failed ❌",
+        "descript_fail":"You dosen't have set channel yet",
+        "descript":"This channel will no longer recived welcome message when new member has left",
+        "requester":"Called by {user}"
+    },
+    "set_track":{
+        "title":"Successful ✅",
+        "descript":"``{channel}`` will recived welcome message when member join or leave vc",
+        "requester":"Called by {user}"
+    },
+    "unset_track":{
+        "title":"Successful ✅",
+        "descript":"``{channel}`` will no longer recived welcome message when member join or leave vc",
+        "requester":"Called by {user}"
+    },
+    "trackvc":{
+        "join":"✅ **{user}** Joined ``🔊 {channel}``",
+        "leave":"📴 **{user}** Left ``🔊 {channel}``",
+        "moveto":"🔃 **{user}** Moved from ``🔊 {channel1}`` to ``🔊 {channel2}``"
+    },
+    "mp3":{
+        "placeholder":"Select file quality",
+        "initializing":"initializing Download",
+        "retriving":"Retriving `{title}` This process may take a while",
+        "starting":"Dowloading `{title}`",
+        "unexpected_error":"There is unexpected error please try again",
+        "uploading_to_drive":"Due to the large of file uploading your file to Google Drive this process may take several minutes",
+        "drive_uploaded":"Due to the large of file your file was uploaded to Google Drive link below \n {link}",
+        "sending":"Sending file",
+        "successful":"Download successfully",
+        "progress":"Downloading `{title}` {progress} [{speed}] | {time} Left",
+        "uploading0":"Uploading `{file_name}` to google drive 0%.",
+        "uploading":"Uploading `{file_name}` to google drive {percent}%.",
+        "upload_complete":"Upload complate"
+    },
+    "invalid_format":{
+        "failed":"Failed ❌",
+        "descript":"Please check your date and time again due to the info you just provide is not valid",
+        "desfprtime":"Please check your date and time again due to nfo you just provide pasted",
+        "requester":"Called by {user}"
+    },
+    "reminder":{
+        "reminder":"Reminder  🧠 ",
+        "set_remind_com":"Set reminder complete",
+        "message":"``**{message}** at {time}``",
+        "set_remind_com_des":"Remind at ``{time}`` says ``{message}``",
+        "requester":"Called by {user}"
+    },
+    "previous":{
+        "noprevious":"No more previous music"
+    }
+  }
+}
