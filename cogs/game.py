@@ -9,6 +9,7 @@ from ui.language_respound import get_respound
 from ui.help_embed import embed
 from ui.button import buttin
 from ui.embed_gen import createembed
+from config import TOKEN
 
 class chess(commands.Cog):
   def __init__(self, bot ):
@@ -37,7 +38,7 @@ class chess(commands.Cog):
         await asyncio.sleep(5)
         await d.delete()
         return
-      self.bot.togetherControl = await DiscordTogether(self.bot.config.token)
+      self.bot.togetherControl = await DiscordTogether(TOKEN)
       respound = get_respound(interaction.locale,"activity")
       if activity == "chess":
         link = await self.bot.togetherControl.create_link(interaction.user.voice.channel.id,'chess')

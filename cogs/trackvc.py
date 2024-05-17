@@ -7,7 +7,6 @@ from ui.language_respound import get_respound
 import json
 from discord.app_commands import Choice
 
-
 class trackAPI(commands.Cog):
     def __init__(self, bot):
          self.bot = bot
@@ -53,6 +52,8 @@ class trackAPI(commands.Cog):
         data = database.find_one({"guild_id":str(member.guild.id)})
         if data == None:
             return
+        if member == self.bot.user:
+           return
         respound = get_respound(member.guild.preferred_locale,f"trackvc")
         if before.channel == None and after.channel != None: #None -> join
             embed = createembed.joinvc(respound,member,after.channel.name)

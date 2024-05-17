@@ -17,6 +17,7 @@ import random
 from ui.embed_gen import createembed
 from ui.language_respound import get_respound
 from ui.button import buttin
+from ui.controlpanal import *
 import requests
 import random
 import os
@@ -26,7 +27,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import datetime
 from urllib.parse import urlparse
+from PIL import Image, ImageDraw 
+import io
+import logging
+from config import CLIENT_ID,CLIENT_SECRET
 
+logger = logging.getLogger('littlebirdd')
 trans_queueMode= {
             'wavelink.QueueMode.normal':"Disable",
             'wavelink.QueueMode.loop':"Song",
@@ -71,269 +77,6 @@ async def check_before_play(interaction: discord.Interaction):
         await interaction.followup.send(embed=embed, ephemeral=True)
         return False
     return True
-
-
-class pp(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:1_:989120454063185940>",
-            style=discord.ButtonStyle.green,
-            custom_id="pp",
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        if not vc.paused:
-            await vc.pause(True)
-        elif vc.paused:
-            await vc.pause(False)
-        pp = [x for x in vc.Myview.children if x.custom_id == "pp"][0]
-        if vc.paused:
-            pp.emoji = "<a:2_:989120456240025670>"
-            pp.style = discord.ButtonStyle.red
-        elif not vc.paused:
-            pp.emoji = "<a:1_:989120454063185940>"
-            pp.style = discord.ButtonStyle.green
-        else:
-            pp.emoji = "<a:1_:989120454063185940>"
-            pp.style = discord.ButtonStyle.green
-        await nowplaying.np(self, self.interaction)
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-class pr(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:10:989120441325068308>", style=discord.ButtonStyle.blurple
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        respound = get_respound(interaction.locale, "previous")
-        if len(vc.queue.history) < 2:
-            await interaction.followup.send(content=respound.get('noprevious'),ephemeral=True)
-            return
-        pre_queuemode =  vc.queue.mode
-        vc.queue.mode = wavelink.QueueMode.normal
-
-        
-        vc.queue._queue.insert(0,vc.queue.history[-1]) #insert current song
-        await vc.queue.history.delete(len(vc.queue.history)-1)#delete the current song
-        vc.queue._queue.insert(0,vc.queue.history[-1]) #insert previous song       
-        await vc.queue.history.delete(len(vc.queue.history)-1) #delete the previous song
-        await vc.skip() #play previous song
-
-        vc.queue.mode = pre_queuemode
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class sk(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:10:989120439655739432>", style=discord.ButtonStyle.blurple
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        await vc.skip()
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class lo(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:4_:989120448312803348>",
-            style=discord.ButtonStyle.gray,
-            custom_id="lo",
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        lo = [x for x in vc.Myview.children if x.custom_id == "lo"][0]
-        if not await check_before_play(self.interaction):
-            return
-        if vc.queue.mode == wavelink.QueueMode.normal:
-            vc.queue.mode = wavelink.QueueMode.loop
-            lo.style = discord.ButtonStyle.blurple
-        elif vc.queue.mode == wavelink.QueueMode.loop:
-            vc.queue.mode = wavelink.QueueMode.loop_all
-            lo.style = discord.ButtonStyle.green
-        elif vc.queue.mode == wavelink.QueueMode.loop_all:
-            vc.queue.mode = wavelink.QueueMode.normal
-            lo.style = discord.ButtonStyle.gray
-        await nowplaying.np(self, interaction)
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class dw(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:6_:989120452075094026>", style=discord.ButtonStyle.blurple
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        if vc.volume - 15 < 0:
-            volume = 0
-        else:
-            volume = vc.volume - 15
-        await vc.set_volume(volume)
-        await nowplaying.np(self, self.interaction)
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class uw(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:5_:989120450254737418>", style=discord.ButtonStyle.blurple
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        if vc.volume + 15 > 100:
-            volume = 100
-        else:
-            volume = vc.volume + 15
-        await vc.set_volume(volume)
-        await nowplaying.np(self, self.interaction)
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class cl(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:8_:989120444701491210>", style=discord.ButtonStyle.red
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        vc.queue.clear()
-        await vc.skip()
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class dc(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:7_:989120442851811359>", style=discord.ButtonStyle.red
-        )
-        self.interaction = interaction
-
-    async def callback(self, interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        if not await check_before_play(interaction):
-            return
-        if vc == None:
-            return
-        vc.queue.clear()
-        c = vc.np
-        vc.np = None
-        try:
-            await c.delete()
-        except:
-            pass
-        await vc.disconnect()
-        try:
-            await interaction.followup.send(content="")
-        except:
-            pass
-
-
-class au(Button):
-    def __init__(self, interaction):
-        super().__init__(
-            emoji="<a:9_:989120446706364416>",
-            style=discord.ButtonStyle.gray,
-            custom_id="au",
-        )
-        self.interaction: discord.Interaction = interaction
-
-    async def check_vip(self, v):
-        if self.interaction.client.mango["vip"].find_one({"user_id": str(v)}):
-            return True
-        else:
-            return False
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-        vc: wavelink.Player = interaction.guild.voice_client
-        vc.interaction = interaction
-        respound = get_respound(interaction.locale, "callback")
-        au = [x for x in vc.Myview.children if x.custom_id == "au"][0]
-        if not await check_before_play(self.interaction):
-            return
-        if await self.check_vip(interaction.user.id):
-            if vc.autoplay == wavelink.AutoPlayMode.partial:
-                vc.autoplay = wavelink.AutoPlayMode.enabled
-                au.style = discord.ButtonStyle.green
-            elif vc.autoplay == wavelink.AutoPlayMode.enabled:
-                vc.autoplay = wavelink.AutoPlayMode.partial
-                au.style = discord.ButtonStyle.gray
-            await nowplaying.np(self, self.interaction)
-            try:
-                await interaction.followup.send(content="")
-            except:
-                pass
-        else:
-            embed = createembed.callback(
-                self.interaction, self.interaction.client, respound
-            )
-            await interaction.followup.send(embed=embed)
 
 
 class nowplaying: 
@@ -442,15 +185,15 @@ class nowplaying:
     #     except:
             # pass
     
-     
-    async def np(self,interaction, send=False):
-            vc: wavelink.Player = interaction.guild.voice_client
-            respound = get_respound(interaction.locale, "np")
+    async def np3(self,message:discord.Message, send=False):
+            vc: wavelink.Player = message.guild.voice_client
+            respound = get_respound(message.guild.preferred_locale, "np")
             if vc:
                 if vc.current is not None:
-                    upcoming = list(itertools.islice(vc.queue,0, 4))
+                    lst = list(vc.queue)
                     if vc.queue.mode == wavelink.QueueMode.loop_all:
-                        upcoming = upcoming+list(vc.queue.history)
+                        lst = lst +list(vc.queue.history)
+                    upcoming = list(itertools.islice(lst,0, 4))
                     fmt = "\n".join(
                         f'` {index}.{track} `' for index,track in enumerate(upcoming,start=1)  
                     )    
@@ -476,28 +219,106 @@ class nowplaying:
                     npembed.set_footer(
                         text=f"{'Paused'if not vc.playing else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
                     )
-
                     npembed.set_thumbnail(url=vc.current.artwork)
                     more = f"`{respound.get('andmore').format(more=len(vc.queue)-4)}`"
                     if len(vc.queue) - 4 <= 0:
                         more = None
                     if len(fmt) == 0:
                         fmt = f"`{respound.get('fmt')}`"
-                    if send:
+                    with io.BytesIO() as image_binary:
+                        total = vc.current.length // 1000
+                        progress = vc.position // 1000
+                        w, h =  350, 10
+                        r=3
+                        length = (progress*w)/total
+                        img = Image.new("RGBA", (w, h)) 
+                        img1 = ImageDraw.Draw(img)   
+                        img1.line(xy=(-1,5,350,5),fill ="white",width=2) 
+                        img1.line(xy=(-1,5,length,5),fill ="red",width=2,joint='curve')
+                        img1.ellipse(xy=(length-r,5-r,length+r,5+r) ,fill='darkred')
+                        img.save(image_binary,'PNG')
+                        image_binary.seek(0)
+
+                        file = discord.File(image_binary, filename="image.png")
+
+                        npembed.set_image(url="attachment://image.png")
+                        
                         content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
-                        vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview )
-                        return
-                    if vc.np:
-                        try:
+                        await vc.np.edit(content=content, embed=npembed,view=vc.Myview,file=file)
+                        return vc.np
+                     
+    async def np(self,interaction, send=False):
+            vc: wavelink.Player = interaction.guild.voice_client
+            respound = get_respound(interaction.locale, "np")
+            if vc:
+                if vc.current is not None:
+                    lst = list(vc.queue)
+                    if vc.queue.mode == wavelink.QueueMode.loop_all:
+                        lst = lst +list(vc.queue.history)
+                    upcoming = list(itertools.islice(lst,0, 4))
+                    fmt = "\n".join(
+                        f'` {index}.{track} `' for index,track in enumerate(upcoming,start=1)  
+                    )    
+                    try:
+                        duration = f"{convert(vc.position)}/{convert(vc.current.length)}"
+                    except:
+                        duration = respound.get("unable_duration")
+                    npembed = discord.Embed(
+                        title=f"{vc.current.title}  <a:blobdancee:969575788389220392>",
+                        url=vc.current.uri,
+                        color=0xFFFFFF,
+                    )
+                    npembed.set_author(
+                        name=f"{respound.get('addedby')} {vc.current.extras.requester}",
+                        icon_url=f"{vc.current.extras.requester_icon}",
+                    )
+                    npembed.add_field(
+                        name=f"{respound.get('playingin')}", value=f"<#{vc.channel.id}>"
+                    )
+                    npembed.add_field(
+                        name=f"{respound.get('duration')}", value=f"`{duration}`"
+                    )
+                    npembed.set_footer(
+                        text=f"{'Paused'if not vc.playing else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
+                    )
+                    npembed.set_thumbnail(url=vc.current.artwork)
+                    more = f"`{respound.get('andmore').format(more=len(vc.queue)-4)}`"
+                    if len(vc.queue) - 4 <= 0:
+                        more = None
+                    if len(fmt) == 0:
+                        fmt = f"`{respound.get('fmt')}`"
+                    with io.BytesIO() as image_binary:
+                        total = vc.current.length // 1000
+                        progress = vc.position // 1000
+                        w, h =  350, 10
+                        r=3
+                        length = (progress*w)/total
+                        img = Image.new("RGBA", (w, h)) 
+                        img1 = ImageDraw.Draw(img)   
+                        img1.line(xy=(-1,5,350,5),fill ="white",width=2) 
+                        img1.line(xy=(-1,5,length,5),fill ="red",width=2,joint='curve')
+                        img1.ellipse(xy=(length-r,5-r,length+r,5+r) ,fill='darkred')
+                        img.save(image_binary,'PNG')
+                        image_binary.seek(0)
+
+                        file = discord.File(image_binary, filename="image.png")
+                        
+                        npembed.set_image(url="attachment://image.png")
+                        if send:
                             content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
-                            vc.np = await vc.interaction.followup.edit_message(message_id=vc.np.id,content=content, embed=npembed,view=vc.Myview )
-                        except:
+                            vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview ,file=file)
+                            return
+                        if vc.np:
+                            try:
+                                content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
+                                vc.np = await vc.interaction.followup.edit_message(message_id=vc.np.id,content=content, embed=npembed,view=vc.Myview ,attachments=[file])
+                            except:
+                                content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
+                                vc.np = await vc.interaction.followup.edit_message(message_id=vc.np.id,content=content, embed=npembed,view=vc.Myview ,attachments=[file])
+                        else:
                             content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
-                            vc.np = await vc.interaction.followup.edit_message(message_id=vc.np.id,content=content, embed=npembed,view=vc.Myview )
-                    else:
-                        content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
-                        vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview )
-                    return vc.np
+                            vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview,file=file)
+                        return vc.np
                 
 
 
@@ -510,11 +331,206 @@ class music(commands.Cog):
         self.replacement = "."
         self.sptf = spotipy.Spotify(
             client_credentials_manager=SpotifyClientCredentials(
-                client_id=self.bot.config.get("client_id"),
-                client_secret=self.bot.config.get("client_secret"),
+                client_id=CLIENT_ID,
+                client_secret=CLIENT_SECRET,
             )
         )
+
+    # @commands.Cog.listener()
+    # async def on_message(self,message:discord.Message):
+    #     database = self.bot.mango['music_channel']
+    #     data = database.find_one({'guild_id':str(message.guild.id)})
+    #     if data:
+    #         if message.channel.id == int(data['channel_id']):
+    #             await message.delete()
+    #             target = await message.channel.fetch_message(data['message_id'])
+    #             # if await self.check_ban(message.author.id):
+    #             #     respound = get_respound(message.guild.preferred_locale, "baned")
+    #             #     embed = createembed.baned(interaction, interaction.client, respound)
+    #             #     d = await interaction.followup.send(embed=embed)
+    #             #     await asyncio.sleep(5)
+    #             #     await d.delete()
+    #             #     return
             
+    #             # respound = get_respound(interaction.locale, "check_before_play")
+
+    #             if not message.author.voice:
+    #                 # embed = createembed.check_before_play(interaction, interaction.client, "usernotin", respound)
+    #                 # await interaction.followup.send(embed=embed)
+    #                 return
+                
+    #             elif not message.guild.voice_client:
+    #                 vc: wavelink.Player = await message.author.voice.channel.connect(cls=wavelink.Player)
+
+    #             elif message.guild.voice_client.channel != message.author.voice.channel:
+    #                 # embed = createembed.check_before_play(interaction, interaction.client, "diffchan", respound)
+    #                 # await interaction.followup.send(embed=embed)
+    #                 return
+                
+    #             else:
+    #                 vc: wavelink.Player = message.guild.voice_client
+
+    #             await message.guild.change_voice_state(channel=message.author.voice.channel, self_mute=False, self_deaf=True)
+    #             search = message.content
+    #             await self.statistic(search)
+
+    #             if not vc.playing and not vc.queue:
+    #                 setattr(vc, "np", target)
+    #                 setattr(vc, "loop", "False")
+    #                 setattr(vc, "task", None)
+    #                 setattr(vc, "Myview", None)
+    #                 setattr(vc, "interaction", message)
+    #                 pre = pr(message,nowplaying.np)
+    #                 pl = pp(message,nowplaying.np)
+    #                 loop = lo(message,nowplaying.np)
+    #                 skip = sk(message,nowplaying.np)
+    #                 # voldown = dw(interaction)
+    #                 # volup = uw(interaction)
+    #                 # clear = cl(interaction)
+    #                 auto = au(message,nowplaying.np)
+    #                 disconnect = dc(message,nowplaying.np)
+    #                 vc.Myview = View(timeout=None)
+    #                 vc.Myview.add_item(loop)
+    #                 vc.Myview.add_item(auto)
+    #                 vc.Myview.add_item(pre)
+    #                 vc.Myview.add_item(pl)
+    #                 vc.Myview.add_item(skip)
+    #                 # vc.Myview.add_item(voldown)
+    #                 # vc.Myview.add_item(volup)
+    #                 # vc.Myview.add_item(clear)
+    #                 vc.Myview.add_item(disconnect)
+
+    #             vc.autoplay = wavelink.AutoPlayMode.partial
+    #             # -------Lplaylist
+    #             if search == "Lplaylist":
+    #                 if await self.check_vip(message.author.id):
+    #                     database = self.bot.mango["lplaylist"]
+    #                     data = database.find_one({"user_id": str(message.author.id)})
+    #                     if not data:
+    #                         # respound = get_respound(message.guild.preferred_locale, "callback")
+    #                         # embed = createembed.playnolplaylist(interaction, self.bot, respound)
+    #                         # await interaction.followup.send(embed=embed)
+    #                         return
+
+    #                     first = None
+    #                     for title, uri in data["playlist"].items():
+    #                         source = await createsource.searchen(
+    #                             self,
+    #                             uri.replace(self.replacer, self.replacement),
+    #                             message.author,
+    #                         )
+    #                         if not first:
+    #                             first = source
+    #                         if not vc.queue and not vc.playing:
+    #                             await vc.queue.put_wait(source)
+    #                             await vc.play(await vc.queue.get_wait())
+    #                         else:
+    #                             await vc.queue.put_wait(source)
+    #                             await nowplaying.np3(self, message)
+    #                             print(f'adding Lplaylist {source}')
+    #                     # await self.addtoqueue(
+    #                     #     first, interaction,playlist_title='Lplaylist', playlist=True, number=len(data["playlist"])
+    #                     # )
+    #                     return
+    #                 else:
+    #                     respound = get_respound(message.guild.preferred_locale, "callback")
+    #                     # embed = createembed.noviplplaylist(interaction, self.bot, respound)
+    #                     # await interaction.followup.send(embed=embed)
+    #                     return
+    #             yt = False
+    #             if "onlytube" in search:
+    #                 yt = True
+    #                 search = search.replace("onlytube", "")
+    #             track = await createsource.searchen(self, search, message.author, onlyyt=yt)
+    #             if track == None:
+    #                 # embed = createembed.noresult(interaction, self.bot, respound)
+    #                 # await interaction.followup.send(embed=embed)
+    #                 print('track not found')
+    #                 return
+                
+    #             if not vc.playing and not vc.queue:
+    #                 await vc.queue.put_wait(track)
+    #                 await vc.set_volume(100)
+    #                 await vc.play(await vc.queue.get_wait())
+    #                 print(f"playing {vc.current} requested by {vc.current.extras.requester}")
+    #             else:
+    #                 await vc.queue.put_wait(track)
+    #                 print(f'adding {track}')
+    #                 # await self.addtoqueue(track, interaction)
+    #                 await nowplaying.np3(self, message)
+
+    @app_commands.command(
+        name="createmusicchannel",
+        description="create new music channel for songs",
+    )
+    async def create_music_channel(self, interaction: discord.Interaction,title:str):
+        await interaction.response.defer()
+        database = self.bot.mango['music_channel']
+        data = database.find_one({'guild_id':str(interaction.guild.id)})
+        if data:
+            try:
+               await interaction.guild.fetch_channel(int(data['channel_id']))
+               await interaction.followup.send("มีช่องเพลงอยู่เเล้ว")
+               return
+            except Exception as e :
+               logger.error(e)
+               database.delete_one({'guild_id':str(interaction.guild.id)})
+        text_channel = await interaction.guild.create_text_channel(name=title,category=interaction.channel.category)
+        npembed = discord.Embed(
+            title=f"LittLeBirDD Music  <a:blobdancee:969575788389220392>",
+            color=0xFFFFFF,
+        )
+        npembed.add_field(
+            name=f"ระยะเวลา", value=f"`0:00:00/0:00:00`"
+        )
+        npembed.set_footer(
+            text=f"Not Playing | 100% | LoopStatus:Disable | Autoplay:Disable"
+        )
+        # npembed.set_thumbnail(url=vc.current.artwork)
+        pre = pr(interaction)
+        pl = pp(interaction)
+        loop = lo(interaction)
+        skip = sk(interaction)
+        # voldown = dw(interaction)
+        # volup = uw(interaction)
+        # clear = cl(interaction)
+        auto = au(interaction)
+        Myview = View(timeout=None)
+        disconnect = dc(interaction)
+        Myview.add_item(loop)
+        Myview.add_item(auto)
+        Myview.add_item(pre)
+        Myview.add_item(pl)
+        Myview.add_item(skip)
+        # vc.Myview.add_item(voldown)
+        # vc.Myview.add_item(volup)
+        # vc.Myview.add_item(clear)
+        Myview.add_item(disconnect)
+        with io.BytesIO() as image_binary:
+            total = 100
+            progress = 0
+            w, h =  350, 10
+            r=3
+            length = (progress*w)/total
+            img = Image.new("RGBA", (w, h)) 
+            img1 = ImageDraw.Draw(img)   
+            img1.line(xy=(-1,5,350,5),fill ="white",width=2) 
+            img1.ellipse(xy=(length-r,5-r,length+r,5+r) ,fill='darkred')
+            img.save(image_binary,'PNG')
+            image_binary.seek(0)
+
+            file = discord.File(image_binary, filename="image.png")
+
+            npembed.set_image(url="attachment://image.png")
+            # vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview,file=file)
+         
+            np = await text_channel.send(content='ไม่มีเพลงในคิวเเล้ว',embed=npembed,file=file,view=Myview)
+            database.insert_one({
+            "guild_id":str(interaction.guild.id),
+            "channel_id":str(text_channel.id),
+            "message_id":str(np.id)
+                })
+                     
     async def check_ban(self, v):
         if self.bot.mango["ban"].find_one({"user_id": str(v)}):
             return True
@@ -556,20 +572,22 @@ class music(commands.Cog):
         return True
 
     @commands.Cog.listener()
-    async def on_wavelink_track_exception(self, player: wavelink.Player, track, error):
-        interaction: discord.Interaction = player.interaction
-        vc: player = interaction.guild.voice_client
+    async def on_wavelink_track_exception(self, exp:wavelink.TrackExceptionEventPayload):
+        interaction: discord.Interaction = exp.player.interaction
+        vc:wavelink.Player = interaction.guild.voice_client
         respound = get_respound(interaction.locale, "callback")
         await asyncio.sleep(2)
-        if vc.is_playing():
+        if not vc.paused:
             await vc.stop()
-        await vc.np.delete()
+        try:
+            await vc.np.delete()
+        except:pass
         vc.np = None
         await vc.stop()
         embed = createembed.on_wavelink_track_exception(
             interaction, interaction.client, respound
         )
-        d = await interaction.followup_send(embed=embed)
+        d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
 
@@ -775,15 +793,15 @@ class music(commands.Cog):
             setattr(vc, "task", None)
             setattr(vc, "Myview", None)
             setattr(vc, "interaction", interaction)
-            pre = pr(interaction)
-            pl = pp(interaction)
-            loop = lo(interaction)
-            skip = sk(interaction)
+            pre = pr(interaction,nowplaying.np)
+            pl = pp(interaction,nowplaying.np)
+            loop = lo(interaction,nowplaying.np)
+            skip = sk(interaction,nowplaying.np)
             # voldown = dw(interaction)
             # volup = uw(interaction)
             # clear = cl(interaction)
-            auto = au(interaction)
-            disconnect = dc(interaction)
+            auto = au(interaction,nowplaying.np)
+            disconnect = dc(interaction,nowplaying.np)
             vc.Myview = View(timeout=None)
             vc.Myview.add_item(loop)
             vc.Myview.add_item(auto)
@@ -812,7 +830,7 @@ class music(commands.Cog):
                     source = await createsource.searchen(
                         self,
                         uri.replace(self.replacer, self.replacement),
-                        interaction,
+                        interaction.user,
                     )
                     if not first:
                         first = source
@@ -822,7 +840,7 @@ class music(commands.Cog):
                     else:
                         await vc.queue.put_wait(source)
                         await nowplaying.np(self, interaction)
-                        print(f'adding Lplaylist {source}')
+                        logger.info(f'adding Lplaylist {source}')
                 await self.addtoqueue(
                     first, interaction,playlist_title='Lplaylist', playlist=True, number=len(data["playlist"])
                 )
@@ -836,7 +854,7 @@ class music(commands.Cog):
         if "onlytube" in search:
             yt = True
             search = search.replace("onlytube", "")
-        track = await createsource.searchen(self, search, interaction, onlyyt=yt)
+        track = await createsource.searchen(self, search, interaction.user, onlyyt=yt)
         if track == None:
             embed = createembed.noresult(interaction, self.bot, respound)
             await interaction.followup.send(embed=embed)
@@ -846,10 +864,10 @@ class music(commands.Cog):
             await vc.queue.put_wait(track)
             await vc.set_volume(100)
             await vc.play(await vc.queue.get_wait())
-            print(f"playing {vc.current} requested by {vc.current.extras.requester}")
+            logger.info(f"playing {vc.current} requested by {vc.current.extras.requester}")
         else:
             await vc.queue.put_wait(track)
-            print(f'adding {track}')
+            logger.info(f'adding {track}')
             await self.addtoqueue(track, interaction)
             await nowplaying.np(self, interaction)
 
@@ -870,7 +888,7 @@ class music(commands.Cog):
         database = self.bot.mango["searchstatistic2"]
         source = database.find().sort("times", -1).limit(3)
         if len(current) > 0:
-            source = database.find({"music": {"$regex": current}}).limit(25)
+            source = database.find({"music": {"$regex": current,'$options' : 'i'}}).limit(25)
         return [app_commands.Choice(name=l["music"].replace(self.replacer, self.replacement),value=l["music"].replace(self.replacer, self.replacement))for l in source]
 
     def convert(self, seconds):
@@ -932,7 +950,7 @@ class music(commands.Cog):
                 if vc.np == None:
                     break
             except Exception as e:
-                print(e)
+                logger.error(e)
             await asyncio.sleep(1)
 
     # --------------------------------
@@ -943,7 +961,7 @@ class music(commands.Cog):
         if searchtrack:
             track = searchtrack[0]
             result = f"{track.title} - {track.artist} "
-            print(f"last.fm | {title} -> {result}")
+            logger.info(f"last.fm | {title} -> {result}")
         else:
             corrected_title = self.sptf.search(q=title, type="track", limit=1)[
                 "tracks"
@@ -951,7 +969,7 @@ class music(commands.Cog):
             if corrected_title:
                 track = corrected_title[0]
                 result = f"{track['name']} - {track['artists'][0]['name']}"
-                print(f"spotify | {title} -> {result}")
+                logger.info(f"spotify | {title} -> {result}")
             else:
                 result = None
         return result
@@ -963,12 +981,12 @@ class music(commands.Cog):
             return
         if not dict(vc.current.extras).get('requester',None):
             vc.current.extras = {'requester': 'Recommended','requester_icon' : payload.player.client.user.avatar.url}
-        print(f"Now playing : {vc.current}")
+        logger.info(f"Now playing : {vc.current}")
         vc.task = self.bot.loop.create_task(self.current_time(vc.interaction))
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, payload:wavelink.payloads.TrackEndEventPayload):
-        print(f"ending: {payload.track}")
+        logger.info(f"ending: {payload.track}")
         vc: wavelink.Player = payload.player
         if not vc:
             return
@@ -1152,7 +1170,7 @@ class music(commands.Cog):
             if vc.queue or vc.current:
                 break
             i+=1
-            print(f'counting no song {interaction.guild.name} | {i}')
+            logger.info(f'counting no song {interaction.guild.name} | {i}')
             await asyncio.sleep(0.4)
 
     @app_commands.command(name="loop", description="Set music loop status")
@@ -1329,10 +1347,16 @@ class music(commands.Cog):
         if await self.check_before_play(interaction):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
-            delete = vc.queue._queue[index-1]
+            delete = None
+            if vc.queue.mode == wavelink.QueueMode.loop_all:
+                if index >len(vc.queue):
+                    delete = vc.queue.history.peek(index-len(vc.queue)-1)
+                    vc.queue.history.delete(index-len(vc.queue)-1)
+            else:
+                delete = vc.queue.peek(index-1)
+                vc.queue.delete(index-1)
             respound = get_respound(interaction.locale, "remove")
             embed = createembed.remove(interaction, self.bot, delete, respound)
-            await vc.queue.delete(index-1)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1428,7 +1452,7 @@ class music(commands.Cog):
         i=0
         while True:
             i += 1
-            print(f'counting alonetime {member.guild.name} | {i}')
+            logger.info(f'counting alonetime {member.guild.name} | {i}')
             if len(vc.channel.members) > 1:
                 break
             await asyncio.sleep(0.5)

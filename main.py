@@ -15,14 +15,11 @@ import aioschedule
 import sys
 import asyncio
 import itertools
-import subprocess
+import logsetup #essential
+import logging
 
-
-# os.system("start cmd /k java -jar lavalink.jar")
-with open("_config.json", "r") as f:
-    config = json.load(f)
-
-MODEL = config["model"]  # test for LittlePonYY | main for LittLeBirDD
+logger = logging.getLogger('littlebirdd')
+from config import CONFIG,MODEL,TOKEN,APPLICATION_ID,MONGO,CLIENT_ID,CLIENT_SECRET,LAST_API_KEY,LAST_API_SECRET,LAST_USERNAME,LAST_PASSWORD
 
 DATABASE = [
     "customrandom",
@@ -41,6 +38,7 @@ DATABASE = [
     "vip",
     "ban",
     "dev",
+    "music_channel"
 ]
 
 
@@ -54,24 +52,24 @@ class LittLeBirDD(commands.Bot):
     def __init__(self, **kwargs):
         super().__init__(
             intents=intents,
-            command_prefix=config[MODEL].get("defualt_prefix"),
+            command_prefix=CONFIG.get("defualt_prefix"),
             help_command=None,
-            application_id=config[MODEL].get("application_id"),
+            application_id=APPLICATION_ID,
         )
         self.model = MODEL
-        self.config = config[MODEL]
-        self.mango = MongoClient(self.config.get("mango"))["Main"]
+        self.config = CONFIG
+        self.mango = MongoClient(MONGO)["Main"]
         self.spotify_client = spotipy.Spotify(
             auth_manager=SpotifyClientCredentials(
-                client_id=self.config.get("client_id"),
-                client_secret=self.config.get("client_secret"),
+                client_id=CLIENT_ID,
+                client_secret=CLIENT_SECRET,
             )
         )
         self.last = pylast.LastFMNetwork(
-            api_key=self.config.get("last_api_key"),
-            api_secret=self.config.get("last_api_secret"),
-            username=self.config.get("last_username"),
-            password_hash=pylast.md5(self.config.get("last_password")),
+            api_key=LAST_API_KEY,
+            api_secret=LAST_API_SECRET,
+            username=LAST_USERNAME,
+            password_hash=pylast.md5(LAST_PASSWORD),
         )
 
     async def access_database(self, file):
@@ -124,7 +122,7 @@ async def change_profile():
             if start <= current_date <= end:
                 if event != final_event["event"]:
                     if event["priority"] < final_event["priority"]:
-                        print("Changing Avartar")
+                        logger.info('Changing Avartar')
                         final_event["priority"] = event["priority"]
                         final_event["file"] = event["file"]
                         final_event["event"] = r
@@ -142,31 +140,22 @@ async def change_profile():
                                 except:
                                     pass
 
-
-# async def node_connect():
-#     await wavelink.NodePool.create_node(bot=bot,host=config.get("host"),
-#                                         port=config.get("port"),
-#                                         password=config.get("password"),
-#                                         https=config.get("https"),
-#                                         spotify_client=spotify.SpotifyClient(client_id=config.get("client_id"),
-#                                         client_secret=config.get("client_secret")))
-
-
-async def node_connect():
-    node = wavelink.Node(uri="http://localhost:2333", password="youshallnotpass")
-    await wavelink.Pool.connect(client=bot, nodes=[node])
-
+async def node_connect(): 
+    node1 = wavelink.Node(uri ='http://n1.ll.darrennathanael.com:2269', password="glasshost1984")
+    # node2 = wavelink.Node(uri ='http://lavalink.rudracloud.com:2333', password="RudraCloud.com")
+    # node3 = wavelink.Node(uri ='http:/localhost:2333', password="youshallnotpass")
+    await wavelink.Pool.connect(client=bot, nodes=[node1])
 
 async def check_database_avaliable():
     for collection in DATABASE:
         alreadyhave = bot.mango.list_collection_names()
         if collection not in alreadyhave:
             bot.mango.create_collection(collection)
-            print(f'Create new collaction named "{collection}"')
+            logger.info(f'Create new collaction named "{collection}"')
 
 
 async def temporary_cooling():
-    print("bot closing")
+    logger.info("bot closing")
     global close_by_cooling
     close_by_cooling = True
     await bot.close()
@@ -186,14 +175,14 @@ async def on_ready():
     await node_connect()
     aioschedule.every().days.at(bot.config["restart_at"]).do(temporary_cooling)
     pending.start()
-    print("-------------------------------")
-    print(f"{bot.user} is Ready")
-    print("-------------------------------")
+    logger.info("-------------------------------")
+    logger.info(f"{bot.user} is Ready")
+    logger.info("-------------------------------")
 
 
 @bot.event
 async def on_wavelink_node_ready(node: wavelink.NodeReadyEventPayload):
-    print(f"Wavelink {node.node.identifier} connected")
+    logger.info(f"Wavelink {node.node.identifier} connected")
 
 
 @bot.command()
@@ -229,9 +218,9 @@ async def reload(ctx, extension):
 
 
 if __name__ == "__main__":
-    bot.run(bot.config["token"])
+    bot.run(TOKEN)
     if close_by_cooling:
-        print("restarting")
+        logger.info("restarting")
         time.sleep(bot.config["restart_duration"])
         os.system("cls")
         os.execv(sys.executable, ["python"] + sys.argv)

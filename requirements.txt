@@ -8,7 +8,7 @@ discord.py == 2.3.2
 discord-together == 1.2.6
 giphy_client == 1.0.0
 lyricsgenius == 3.0.1
-Pillow == 10.0.1
+pillow == 10.2.0
 requests == 2.31.0
 spotipy == 2.23.0
 yarl == 1.9.2
@@ -19,3 +19,5 @@ pymongo == 4.5.0
 google-api-python-client == 2.102.0
 portalocker == 2.8.2
 yt_dlp == 2023.10.7
+wavelink == 3.2.0
+qrcode == 7.4.2

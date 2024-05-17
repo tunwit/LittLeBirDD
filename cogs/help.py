@@ -14,6 +14,12 @@ class helpAPI(commands.Cog):
   def __init__(self,bot):
     self.bot = bot
 
+  async def check_ban(self,v):
+      if self.bot.mango['ban'].find_one({'user_id':str(v)}):
+        return True
+      else:
+        return False
+      
   async def check_vip(self,v):
       if self.bot.mango['vip'].find_one({'user_id':str(v)}):
         return True

@@ -8,14 +8,14 @@ from discord import app_commands
 from discord.app_commands import Choice
 from ui.language_respound import get_respound
 from ui.embed_gen import createembed
-
+from config import LYRICSGENIUS
 #---------------------------------------- on_ready
 class Bot(commands.Cog):
   def __init__(self, bot:commands.bot):
     self.bot = bot
     self.msg = {}
     self.lymsg = {}
-    self.genius = lyricsgenius.Genius(bot.config.get("lyricsgenius"))
+    self.genius = lyricsgenius.Genius(LYRICSGENIUS)
 
   async def check_dev(self,v):
       if self.bot.mango['dev'].find_one({'user_id':str(v)}):
