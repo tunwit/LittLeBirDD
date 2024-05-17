@@ -2,10 +2,16 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 import sys
+import os
 
 class Log():
     def __init__(self) -> None:
+        self.checkpath()
         self.setup()
+
+    def checkpath(self):
+        if not os.path.exists('log'):
+            os.mkdir('log')
 
     def logger_filename(self):
         now = datetime.now()
