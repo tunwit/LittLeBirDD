@@ -950,7 +950,7 @@ class music(commands.Cog):
                 if vc.np == None:
                     break
             except Exception as e:
-                logger.error(e)
+                pass
             await asyncio.sleep(1)
 
     # --------------------------------
