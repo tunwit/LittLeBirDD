@@ -22,7 +22,6 @@ import requests
 import random
 import os
 import datetime
-from request_data import request
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import datetime

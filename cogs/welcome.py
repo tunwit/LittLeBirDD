@@ -15,7 +15,6 @@ import io
 from io import BytesIO
 from discord.app_commands import Choice
 import time
-from request_data import request
 
 class welcomeAPI(commands.Cog):
     def __init__(self, bot):
@@ -71,12 +70,11 @@ class welcomeAPI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self,member:discord.Member):
-        re = request("database/welcome.json")
-        database = re.request_access()
-        if database.get(str(member.guild.id),None):
-          if database[str(member.guild.id)]["goodbye"]:
-            channel_id = database[str(member.guild.id)]["goodbye"]
-            re.update_access(database)
+        database = self.bot.mango['welcome']
+        data = database.find_one({'guild_id':str(member.guild.id)})
+        if data:
+          if data["goodbye"]:
+            channel_id = data["goodbye"]
             channel = self.finechannel(member,channel_id)
             t = time.localtime()
             file = await self.create_image(member,mode="goodbye",date=f"{t.tm_mday}/{t.tm_mon}/{t.tm_year}")
@@ -84,12 +82,11 @@ class welcomeAPI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self,member:discord.Member):
-        re = request("database/welcome.json")
-        database = re.request_access()
-        if database.get(str(member.guild.id),None):
-          if database[str(member.guild.id)]["welcome"]:
-            channel_id = database[str(member.guild.id)]["welcome"]
-            re.update_access(database)
+        database = self.bot.mango['welcome']
+        data = database.find_one({'guild_id':str(member.guild.id)})
+        if data:
+          if data["welcome"]:
+            channel_id = data["welcome"]
             channel = self.finechannel(member,channel_id)
             t = time.localtime()
             file = await self.create_image(member,mode="welcome",date=f"{t.tm_mday}/{t.tm_mon}/{t.tm_year}")
@@ -104,38 +101,37 @@ class welcomeAPI(commands.Cog):
   Choice(name = "OFF",value="OFF"),])
     async def welcomemessage(self,interaction:discord.Interaction,channel:discord.TextChannel,mode:str,status:str): 
         await interaction.response.defer()
-        re = request("database/welcome.json")
-        database = re.request_access()
+        database = self.bot.mango['welcome']
+        data = database.find_one({'guild_id':str(interaction.guild.id)})
         if status == 'ON':
           respound = get_respound(interaction.locale,f"set_{mode}")
-          if database.get(str(interaction.guild.id),None) == None:
-            database[str(interaction.guild.id)] = {
-              "welcome":None,
-              "goodbye":None
-            }
-          database[str(interaction.guild.id)][mode] = str(channel.id)
+          if not data:
+            database.insert_one({'guild_id':str(interaction.guild.id),
+                              "welcome":None,
+                              "goodbye":None})
+            
+          database.update_one({'guild_id':str(interaction.guild.id)},{'$set':{f'{mode}':str(channel.id)}})
           embed = createembed.set_welcome(interaction,self.bot,respound)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()
         else:
           respound = get_respound(interaction.locale,f"unset_{mode}")
-          if database.get(str(interaction.guild.id),None) == None:
+          if not data:
             embed = createembed.unset_welcome_error(interaction,self.bot,respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
             return
-
-          database[str(interaction.guild.id)][mode] = None          
-            
-          if database[str(interaction.guild.id)]["welcome"] == None and database[str(interaction.guild.id)]["goodbye"] == None:
-              database.pop(str(interaction.guild.id))
+          
+          database.update_one({'guild_id':str(interaction.guild.id)},{'$set':{f'{mode}':None}})       
+          fore_data = database.find_one({'guild_id':str(interaction.guild.id)})
+          if fore_data["welcome"] == None and fore_data["goodbye"] == None:
+              database.delete_one({'guild_id':str(interaction.guild.id)})
           embed = createembed.unset_welcome(interaction,self.bot,respound)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()
-        re.update_access(database)
 
 async def setup(bot):    
   await bot.add_cog(welcomeAPI(bot))   

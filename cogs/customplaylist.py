@@ -10,7 +10,6 @@ from ui.embed_gen import createembed
 from ui.language_respound import get_respound
 from ui.button import buttin
 import math
-from request_data import request
 import requests
 
 class customplaylistAPI(commands.Cog):
