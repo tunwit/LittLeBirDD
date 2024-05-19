@@ -31,8 +31,17 @@ from PIL import Image, ImageDraw
 import io
 import logging
 from config import CLIENT_ID,CLIENT_SECRET
-
+import sys
 logger = logging.getLogger('littlebirdd')
+
+def unhandle_exception(exc_type, exc_value, exc_traceback):
+    logger = logging.getLogger('littlebirdd')
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+sys.excepthook = unhandle_exception
 trans_queueMode= {
             'wavelink.QueueMode.normal':"Disable",
             'wavelink.QueueMode.loop':"Song",
@@ -625,10 +634,11 @@ class music(commands.Cog):
             await asyncio.sleep(5)
             await d.delete()
             return
-        vc.interaction = interaction
-        vc: wavelink.Player = interaction.guild.voice_client
+        
         respound = get_respound(interaction.locale, "callback")
         if await self.check_before_play(interaction):
+            vc: wavelink.Player = interaction.guild.voice_client
+            vc.interaction = interaction
             if await self.check_vip(interaction.user.id):
                 if vc.autoplay == wavelink.AutoPlayMode.partial:
                     vc.autoplay = wavelink.AutoPlayMode.enabled

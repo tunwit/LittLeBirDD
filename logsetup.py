@@ -3,6 +3,7 @@ from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 import sys
 import os
+import discord
 
 class Log():
     def __init__(self) -> None:
@@ -17,6 +18,13 @@ class Log():
         now = datetime.now()
         return 'littlebirdd_'+now.strftime("%Y-%m-%d")+'.log'
 
+    def unhandle_exception(self,exc_type, exc_value, exc_traceback):
+        logger = logging.getLogger('littlebirdd')
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
     def setup(self):
         logger = logging.getLogger('littlebirdd')
         logger.setLevel(logging.INFO)
@@ -29,8 +37,12 @@ class Log():
 
         console = logging.StreamHandler(sys.stdout)
         console.setFormatter(formatter)
-
+        
         logger.addHandler(handler)
         logger.addHandler(console)
+
+        discord.utils.setup_logging(handler=handler,level=logging.ERROR,formatter=formatter,root=False)
+
+        sys.excepthook = self.unhandle_exception
 
 Log()

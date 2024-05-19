@@ -1,3 +1,6 @@
+import logsetup #essential
+import logging
+
 from discord.ext import commands,tasks
 import json
 import os
@@ -15,8 +18,7 @@ import aioschedule
 import sys
 import asyncio
 import itertools
-import logsetup #essential
-import logging
+from logging.handlers import TimedRotatingFileHandler
 
 logger = logging.getLogger('littlebirdd')
 from config import CONFIG,MODEL,TOKEN,APPLICATION_ID,MONGO,CLIENT_ID,CLIENT_SECRET,LAST_API_KEY,LAST_API_SECRET,LAST_USERNAME,LAST_PASSWORD
@@ -218,7 +220,7 @@ async def reload(ctx, extension):
 
 
 if __name__ == "__main__":
-    bot.run(TOKEN)
+    bot.run(TOKEN,log_level=logging.ERROR)
     if close_by_cooling:
         logger.info("restarting")
         time.sleep(bot.config["restart_duration"])
