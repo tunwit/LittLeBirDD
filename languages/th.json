@@ -353,6 +353,10 @@
     },
     "previous":{
         "noprevious":"ไม่มีเพลงก่อนหน้า"
+    },
+    "autoplay":{
+        "success_title":"Auto play ✅",
+        "success_description":"เปิดระบบเล่นอัตโนมัติเเล้ว"
     }
   }
 }

@@ -620,7 +620,7 @@ class music(commands.Cog):
             await d.delete()
             return
         
-        respound = get_respound(interaction.locale, "viponly")
+        
         if await self.check_before_play(interaction):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
@@ -633,11 +633,11 @@ class music(commands.Cog):
                     vc.autoplay = wavelink.AutoPlayMode.partial
                     au.style = discord.ButtonStyle.gray
                 await nowplaying.np(self, interaction)
-                try:
-                    await interaction.response.send_message(content="")
-                except:
-                    pass
+                respound = get_respound(interaction.locale, "autoplay")
+                embed = createembed.embed_success(interaction, respound)
+                await interaction.followup.send(embed=embed)
             else:
+                respound = get_respound(interaction.locale, "viponly")
                 embed = createembed.embed_fail(interaction, respound)
                 await interaction.followup.send(embed=embed)
 
