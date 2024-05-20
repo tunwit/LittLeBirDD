@@ -1,32 +1,45 @@
 {
 "translator":"SoftWhiTE",
+"requester":"Called by {user}",
 "commands":{
     "reset_stats":{
-        "success":"Stats channel has been removed.",
-        "failed":"You has't create stats channel yet. Please  use `/setup_stats` to create.  ",
-        "requester":"Called by {user}"
+        "success_title":"Stats channel removed. ✅",
+        "success_description":"Stats channel has been removed.",
+        "failed_title":"No Stats ❌",
+        "failed_description":"You has't create stats channel yet. Please  use `/setup_stats` to create.  "
     },
     "welcome":{
         "wel":"ขอบคุณที่เชิญ LittleBirDD นะครับ ผมคือ Developer เอง บอทตัวนี้อยู่ในช่วง Beta Test ถ้ามีบัคก็สามารถเเจ้งมาได้ที่ `LittLe BirDD#0092` สามารถใช้คำสั่ง `.help` เพื่อดูคำสั่งทั้งหมด หรือ เเท็กบอทเพื่อดู Prefix ของเซิร์ฟเวอร์ได้นะคับ\n--------------------\nฝากถึงผู้ที่เชิญบอทเข้ามาเนื่องจากคุณเป็นผู้ทดลองใช้ สามารถทักมาที่ DM เพื่อขอสมาชิกพรีเมี่ยมได้เลยนะครับ >_<"
     },
     "setup_stats":{
-        "success":"Stats channel has been created.",
-        "failed":"You already have a stats channel.",
-        "requester":"Called by {user}.",
+        "success_title":"Create Stats ✅",
+        "success_description":"Stats channel has been created.",
+        "failed_title":"Already have a stats channel. ❌",
+        "failed_description":"You already have a stats channel.",
         "allmember":"All members.",
         "user":"๊User",
         "bot":"Bot"
     },
     "setup_statsError":{
-        "failed":"You don't have the permission to using this command.",
-        "requester":"Called by {user}."
+        "failed_title":"Unauthorize ❌",
+        "failed_description":"You don't have the permission to using this command."
     },
     "check_before_play":{
-        "failed":"Failed ❌",
-        "novc":"Bot is currently not in the voice channel.",
-        "usernotin":"You aren't in the voice channel.",
-        "diffchan":"Bot is used by another voice channel.",
-        "requester":"Called by {user}."
+        "novc":{
+            "failed_title":"Bot is currently not in the voice channel. ❌",
+            "failed_description":"Bot is currently not in the voice channel. use `/play` to play music",
+            "requester":"Called by {user}"
+        },
+        "usernotin":{
+            "failed_title":"Please join voice channel to use command ❌",
+            "failed_description":"You aren't in the voice channel.",
+            "requester":"Called by {user}"
+        },
+        "diffchan":{
+            "failed_title":"Bot is taken ❌",
+            "failed_description":"Bot is used by another voice channel.",
+            "requester":"Called by {user}"
+        }
     },
     "np":{
         "nowplaying":"+++Bot is now playing+++",
@@ -40,14 +53,21 @@
         "queue":"queue",
         "unable_duration":"Unable to calculate"
     },
-    "callback":{
-        "failed":"Failed ❌",
-        "error":"This command can only be used by Vip members.",
-        "on_wavelink_track_exception":"Error occurred, this song cannot be played.",
-        "playnolplaylist":"Your list is empty, use this command `/addplaylist <music>` to add it.",
-        "usernotin":"You aren't in the voice channel.",
-        "noresult":"The song you searched doesn't exist, try another song.",
-        "requester":"Called by {user}"
+    "on_wavelink_track_exception":{
+        "failed_title":"There is an unexpected Error ❌",
+        "failed_description":"Error occurred, this song cannot be played."
+    },
+    "viponly":{
+        "failed_title":"Vip only ❌",
+        "failed_description":"This command can only be used by Vip members."
+    },
+    "playnolplaylist":{
+        "failed_title":"No music in list ❌",
+        "failed_description":"Your list is empty, use this command `/addplaylist <music>` to add it."
+    },
+    "noresult":{
+        "failed_title":"Music not found ❌",
+        "failed_description":"The song you searched doesn't exist, try another song."
     },
     "addtoqueue":{
         "added":"has been added to the queue.",
@@ -55,39 +75,44 @@
         "addplaylist":"Add playlist `{title}` {number} song."
     },
     "on_wavelink_track_end":{
-        "failed":"There is no songs to play. ❌",
-        "error":"No more songs added, I'll be disconnect.",
-        "requester":"Called by {user}."
+        "failed_title":"There is no songs to play. ⭕️",
+        "failed_description":"No more songs added, I'll be disconnect."
     },
     "loop":{
-        "loopchanged":"็as switched to loop mode.",
-        "requester":"Called by {user}."
+        "success_title":"Switch loop mode ✅",
+        "success_description":"Switch loop mode successfull"
     },
     "resume":{
-        "resumed":"Resume the song.",
-        "requester":"Called by {user}."
+        "success_title":"Resume the song. ✅",
+        "success_description":"Successfully resume"
     },
     "pause":{
-        "paused":"Pause the music temporary.",
-        "requester":"Called by {user}."
+        "success_title":"Pause the music temporary. ✅",
+        "success_description":"Successfully pause"
+    },
+    "skipto":{
+        "success_title":"Skipped ✅",
+        "success_description":"Skiped the current song to the {to} song.",
+        "failed_title":"No song you selected ❌",
+        "failed_description":"Please check music index again"
     },
     "skip":{
-        "skiped":"Skiped the current song.",
-        "skipedto":"Skiped the current song to the {to} song.",
-        "requester":"Called by {user}."
+        "success_title":"Skipped the current song. ✅",
+        "success_description":"Successfully skipped the song"
     },
     "dc":{
-        "dced":"Disconnected",
-        "requester":"Called by {user}."
+        "success_title":"Disconnected ✅",
+        "success_description":"Leave voice channel"
     },
     "remove":{
-        "removed":"**`{deleted}`** has been deleted",
-        "remove_error":"Please check the deletion order again.",
-        "requester":"Called by {user}"
+        "success_title":"Music has been deleted ✅",
+        "success_description":"**`{}`** deleted ",
+        "failed_title":"Music not found ❌",
+        "failed_description":"Please check the deletion order again"
     },
     "shuffle":{
-        "shuffle":"Queue has been shuffle",
-        "requester":"Called by {user}"
+        "success_title":"Queue shuffled ✅",
+        "success_description":"Queue has been shuffle"
     },
     "queueList":{
         "more":"There are `{more}` songs left in the queue",
@@ -97,11 +122,13 @@
         "nomorequeue":"**`There are no songs in the queue.`**",
         "notupdate":"This message is not update upon playing"
     },
+    "ononeleft":{
+        "info_title":"There is no one left in the channel. ⭕️",
+        "info_description":"No one is listening. I'll be disconnect."
+    },
     "on_voice_state_update":{
         "kick?":"Why you kick me? ❌",
         "descript":"I'm touchy. 😤",
-        "noone":"There is no one left in the channel.  ❌",
-        "descript2":"No one is listening. I'll be disconnect.",
         "requester":"Called by {user}."
     },
     "detact_levelup":{
@@ -111,8 +138,8 @@
         "descript":"{mention} now you levels is `{level}`, and have experience `{exp}`, progress`{percantage}%`!!."
     },
     "toggle_lv":{
-        "descript":"Now the Level system has been changed  to **`{result}`**.",
-        "requester":"Called by {user}."
+        "info_title":"Toggle Leveling ✅",
+        "info_description":"Now the Level system has been changed  to **`{result}`**."
     },
     "gif":{
         "failed":"Failed ❌",
@@ -178,31 +205,28 @@
         "watch":"Press the link to use Watch Together!!\n{link}"
     },
     "addplaylist":{ 
-        "failed":"Failed ❌",
-        "noresult":"The song you searched doesn't exist, try another song.",
-        "success":"Added`{title}` in your list.",
-        "notvip":"This command can only be used by VIP members.",
-        "requester":"Called by {user}."
+        "failed_title":"Failed ❌",
+        "failed_description":"The song you searched doesn't exist, try another song.",
+        "success_description":"Added`{}` in your list.",
+        "success_title":"Add music to your list ✅"
     },
     "ql_playlist":{
-        "nolist":"You don't have a list. Use  **`addplaylist`** to create your list.",
+        "failed_title":"No list ❌",
+        "failed_description":"You don't have a list. Use  **`addplaylist`** to create your list.",
         "inlist":"List",
         "success":"**` {fmt} `**",
         "notvip":"This command can only be used by VIP members.",
         "requester":"Called by {user}."
     },
     "remove_playlist":{
-        "nolist":"You don't have a list. Use **`addplaylist`** to create your list.",
-        "success":"**` {title} `**  has been removed from your list.",
-        "notvip":"This command can only be used by VIP members.",
-        "failed":"Failed ❌",
-        "descript":"Please check the deletion order again.",
-        "requester":"Called by {user}."
+        "failed_title":"No list ❌",
+        "failed_description":"You don't have a list. Use **`addplaylist`** to create your list.",
+        "success_title":"removed from your list. ✅",
+        "success_description":"**` {} `**  has been removed from your list."
     },
     "clear_playlist":{
-        "success":"All your entries have been deleted.",
-        "failed":"This command can only be used by VIP members.",
-        "requester":"Called by {user}."
+        "success_title":"Deleted ✅",
+        "success_description":"All your entries have been deleted."
     },
     "cr":{
         "activatechoice":"random selection at{i}(type'!?'to stop inserting an option.)",
@@ -234,9 +258,8 @@
         "requester":"Called by {user}."
     },
     "lyrics":{
-        "failed":"Failed ❌",
-        "descript":"Can't find the lyrics you were looking for.",
-        "requester":"Called by {user}."
+        "failed_title":"Failed ❌",
+        "failed_description":"Can't find the lyrics you were looking for."
     },
     "filters":{
         "title":"Applyed filter✅",
@@ -249,9 +272,8 @@
         "requester":"Called by {user}"
     },
     "baned":{
-        "title":"You are baned ❌",
-        "descript":"You are being ban from using LittLeBirDD please contact developer",
-        "requester":"Called by {user}"
+        "failed_title":"You are baned ❌",
+        "failed_description":"You are being ban from using LittLeBirDD please contact developer"
     },
     "alert":{
         "video":"**{channel_name}** just uploaded new video let's check it out\n{url}",
@@ -269,9 +291,8 @@
         "requester":"Called by {user}"
     },
     "set_welcome":{
-        "title":"Successful ✅",
-        "descript":"This channel will recived welcome message when new member has join",
-        "requester":"Called by {user}"
+        "success_title":"Successful ✅",
+        "success_description":"This channel will recived welcome message when new member has join"
     },
     "unset_welcome":{
         "success":"Successful ✅",
@@ -281,9 +302,8 @@
         "requester":"Called by {user}"
     },
     "set_goodbye":{
-        "title":"Successful ✅",
-        "descript":"This channel will recived welcome message when new member has left",
-        "requester":"Called by {user}"
+        "success_title":"Successful ✅",
+        "success_description":"This channel will recived welcome message when new member has left"
     },
     "unset_goodbye":{
         "success":"Successful ✅",
@@ -293,14 +313,12 @@
         "requester":"Called by {user}"
     },
     "set_track":{
-        "title":"Successful ✅",
-        "descript":"``{channel}`` will recived welcome message when member join or leave vc",
-        "requester":"Called by {user}"
+        "success_title":"Successful ✅",
+        "success_description":"``{}`` will recived welcome message when member join or leave vc"
     },
     "unset_track":{
-        "title":"Successful ✅",
-        "descript":"``{channel}`` will no longer recived welcome message when member join or leave vc",
-        "requester":"Called by {user}"
+        "success_title":"Successful ✅",
+        "success_description":"``{channel}`` will no longer recived welcome message when member join or leave vc"
     },
     "trackvc":{
         "join":"✅ **{user}** Joined ``🔊 {channel}``",
@@ -323,17 +341,15 @@
         "upload_complete":"Upload complate"
     },
     "invalid_format":{
-        "failed":"Failed ❌",
-        "descript":"Please check your date and time again due to the info you just provide is not valid",
-        "desfprtime":"Please check your date and time again due to nfo you just provide pasted",
-        "requester":"Called by {user}"
+        "failed_title":"Failed ❌",
+        "failed_description":"Please check your date and time again due to the info you just provide is not valid"
+    },
+    "set_reminder":{
+        "success_title":"Set reminder complete ✅",
+        "success_description":"Remind at ``{}``"
     },
     "reminder":{
-        "reminder":"Reminder  🧠 ",
-        "set_remind_com":"Set reminder complete",
-        "message":"``**{message}** at {time}``",
-        "set_remind_com_des":"Remind at ``{time}`` says ``{message}``",
-        "requester":"Called by {user}"
+        "info_title":"Reminder  🧠 "
     },
     "previous":{
         "noprevious":"No more previous music"

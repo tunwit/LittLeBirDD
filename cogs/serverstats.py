@@ -72,16 +72,16 @@ class serverstatsAPI(commands.Cog):
     await interaction.response.defer()
     if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
         return
-    respound = get_respound(interaction.locale,interaction.command.name)
+    respound = get_respound(interaction.locale,'reset_stats')
     database = self.bot.mango['serverstate']
     server = database.find_one({'guild_id':str(interaction.guild.id)})
     if not server:
-      embed = createembed.reset_stats(interaction,self.bot,False,respound)
+      embed = createembed.embed_fail(interaction,respound)
       d = await interaction.followup.send(embed=embed)  
       await asyncio.sleep(5)
       await d.delete()
@@ -92,7 +92,7 @@ class serverstatsAPI(commands.Cog):
       try:
          await channel.delete()
       except:pass
-    embed = createembed.reset_stats(interaction,self.bot,True,respound)
+    embed = createembed.embed_success(interaction,respound)
     database.delete_one({'guild_id':str(interaction.guild.id)})
     d = await interaction.followup.send(embed=embed)
     await asyncio.sleep(5)
@@ -108,16 +108,16 @@ class serverstatsAPI(commands.Cog):
     await interaction.response.defer()
     if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
         return
-    respound = get_respound(interaction.locale,interaction.command.name)
+    respound = get_respound(interaction.locale,'setup_stats')
     database = self.bot.mango['serverstate']
     server = database.find_one({'guild_id':str(interaction.guild.id)})
     if server:
-      embed = createembed.setup_stats(interaction,self.bot,False,respound)
+      embed = createembed.embed_fail(interaction,respound)
       d = await interaction.followup.send(embed=embed)   
       await asyncio.sleep(5)
       await d.delete()
@@ -146,7 +146,7 @@ class serverstatsAPI(commands.Cog):
       "user_channel":user.id,
       "category":category.id
     })
-    embed = createembed.setup_stats(interaction,self.bot,True,respound)
+    embed = createembed.embed_success(interaction,respound)
     d = await interaction.followup.send(embed=embed)
     await asyncio.sleep(5)
     await d.delete()
@@ -156,7 +156,7 @@ class serverstatsAPI(commands.Cog):
     if isinstance(error,app_commands.MissingPermissions):
       await interaction.response.defer()
       respound = get_respound(interaction.locale,"setup_statsError")
-      embed = createembed.setup_statsError(interaction,self.bot,respound)
+      embed = createembed.embed_fail(interaction,respound)
       d = await interaction.followup.send(embed=embed)   
       await asyncio.sleep(5)
       await d.delete()

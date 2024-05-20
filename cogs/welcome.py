@@ -111,14 +111,14 @@ class welcomeAPI(commands.Cog):
                               "goodbye":None})
             
           database.update_one({'guild_id':str(interaction.guild.id)},{'$set':{f'{mode}':str(channel.id)}})
-          embed = createembed.set_welcome(interaction,self.bot,respound)
+          embed = createembed.embed_success(interaction,self.bot,respound)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()
         else:
           respound = get_respound(interaction.locale,f"unset_{mode}")
           if not data:
-            embed = createembed.unset_welcome_error(interaction,self.bot,respound)
+            embed = createembed.embed_fail(interaction,respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -128,7 +128,7 @@ class welcomeAPI(commands.Cog):
           fore_data = database.find_one({'guild_id':str(interaction.guild.id)})
           if fore_data["welcome"] == None and fore_data["goodbye"] == None:
               database.delete_one({'guild_id':str(interaction.guild.id)})
-          embed = createembed.unset_welcome(interaction,self.bot,respound)
+          embed = createembed.embed_success(interaction,respound)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()

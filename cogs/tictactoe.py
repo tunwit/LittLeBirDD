@@ -308,7 +308,7 @@ class tictactoe(commands.Cog):
     await interaction.response.defer()
     if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()

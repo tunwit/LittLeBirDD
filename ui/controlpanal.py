@@ -8,22 +8,16 @@ async def check_before_play(interaction: discord.Interaction):
     vc: wavelink.Player = interaction.guild.voice_client
     respound = get_respound(interaction.locale, "check_before_play")
     if vc == None:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "novc", respound
-        )
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        embed = createembed.embed_fail(interaction,respound['novc'])
+        await interaction.followup.send(embed=embed)
         return False
     if interaction.user.voice == None:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "usernotin", respound
-        )
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        embed = createembed.embed_fail(interaction,respound['usernotin'])
+        await interaction.followup.send(embed=embed)
         return False
     if interaction.guild.voice_client.channel != interaction.user.voice.channel:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "diffchan", respound
-        )
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        embed = createembed.embed_fail(interaction,respound['diffchan'])
+        await interaction.followup.send(embed=embed)
         return False
     return True
 
@@ -276,7 +270,7 @@ class au(Button):
         await interaction.response.defer()
         vc: wavelink.Player = interaction.guild.voice_client
         vc.interaction = interaction
-        respound = get_respound(interaction.locale, "callback")
+        respound = get_respound(interaction.locale, "viponly")
         au = [x for x in vc.Myview.children if x.custom_id == "au"][0]
         if not await check_before_play(self.interaction):
             return
@@ -294,7 +288,5 @@ class au(Button):
             except:
                 pass
         else:
-            embed = createembed.callback(
-                self.interaction, self.interaction.client, respound
-            )
+            embed = createembed.embed_fail(interaction, respound)
             await interaction.followup.send(embed=embed)

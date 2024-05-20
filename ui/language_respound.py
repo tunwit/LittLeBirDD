@@ -17,7 +17,9 @@ def read_file(local:str):
 def get_respound(local:str,command_name:str):
     local = is_supportlang(local)
     read = read_file(local)
-    return read["commands"][command_name]
+    result = read["commands"][command_name]
+    result.update({'requester':read['requester']})
+    return result
     
 def is_supportlang(local:str):
     return Local.get(str(local),"en")

@@ -67,21 +67,15 @@ async def check_before_play(interaction: discord.Interaction):
     vc: wavelink.Player = interaction.guild.voice_client
     respound = get_respound(interaction.locale, "check_before_play")
     if vc == None:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "novc", respound
-        )
+        embed = createembed.embed_fail(interaction,respound['novc'])
         await interaction.followup.send(embed=embed, ephemeral=True)
         return False
     if interaction.user.voice == None:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "usernotin", respound
-        )
+        embed = createembed.embed_fail(interaction,respound['usernotin'])
         await interaction.followup.send(embed=embed, ephemeral=True)
         return False
     if interaction.guild.voice_client.channel != interaction.user.voice.channel:
-        embed = createembed.check_before_play(
-            interaction, interaction.client, "diffchan", respound
-        )
+        embed = createembed.embed_fail(interaction,respound['diffchan'])
         await interaction.followup.send(embed=embed, ephemeral=True)
         return False
     return True
@@ -560,21 +554,15 @@ class music(commands.Cog):
         vc: wavelink.Player = interaction.guild.voice_client
         respound = get_respound(interaction.locale, "check_before_play")
         if vc == None:
-            embed = createembed.check_before_play(
-                interaction, interaction.client, "novc", respound
-            )
+            embed = createembed.embed_fail(interaction,respound['novc'])
             await interaction.followup.send(embed=embed)
             return False
         if interaction.user.voice == None:
-            embed = createembed.check_before_play(
-                interaction, interaction.client, "usernotin", respound
-            )
+            embed = createembed.embed_fail(interaction,respound['usernotin'])
             await interaction.followup.send(embed=embed)
             return False
         if interaction.guild.voice_client.channel != interaction.user.voice.channel:
-            embed = createembed.check_before_play(
-                interaction, interaction.client, "diffchan", respound
-            )
+            embed = createembed.embed_fail(interaction,respound['diffchan'])
             await interaction.followup.send(embed=embed)
             return False
         return True
@@ -583,7 +571,7 @@ class music(commands.Cog):
     async def on_wavelink_track_exception(self, exp:wavelink.TrackExceptionEventPayload):
         interaction: discord.Interaction = exp.player.interaction
         vc:wavelink.Player = interaction.guild.voice_client
-        respound = get_respound(interaction.locale, "callback")
+        respound = get_respound(interaction.locale, "on_wavelink_track_exception")
         await asyncio.sleep(2)
         if not vc.paused:
             await vc.stop()
@@ -592,9 +580,7 @@ class music(commands.Cog):
         except:pass
         vc.np = None
         await vc.stop()
-        embed = createembed.on_wavelink_track_exception(
-            interaction, interaction.client, respound
-        )
+        embed = createembed.embed_fail(interaction, respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
@@ -610,7 +596,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -628,13 +614,13 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
             return
         
-        respound = get_respound(interaction.locale, "callback")
+        respound = get_respound(interaction.locale, "viponly")
         if await self.check_before_play(interaction):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
@@ -652,9 +638,7 @@ class music(commands.Cog):
                 except:
                     pass
             else:
-                embed = createembed.callback(
-                    interaction, interaction.client, respound
-                )
+                embed = createembed.embed_fail(interaction, respound)
                 await interaction.followup.send(embed=embed)
 
     def is_url(self,url):
@@ -771,16 +755,15 @@ class music(commands.Cog):
 
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
             return
         
         respound = get_respound(interaction.locale, "check_before_play")
-
         if not interaction.user.voice:
-            embed = createembed.check_before_play(interaction, interaction.client, "usernotin", respound)
+            embed = createembed.embed_fail(interaction,respound['usernotin'])
             await interaction.followup.send(embed=embed)
             return
         
@@ -788,7 +771,7 @@ class music(commands.Cog):
             vc: wavelink.Player = await interaction.user.voice.channel.connect(cls=wavelink.Player)
 
         elif interaction.guild.voice_client.channel != interaction.user.voice.channel:
-            embed = createembed.check_before_play(interaction, interaction.client, "diffchan", respound)
+            embed = createembed.embed_fail(interaction,respound['diffchan'])
             await interaction.followup.send(embed=embed)
             return
         
@@ -833,8 +816,8 @@ class music(commands.Cog):
                 database = self.bot.mango["lplaylist"]
                 data = database.find_one({"user_id": str(interaction.user.id)})
                 if not data:
-                    respound = get_respound(interaction.locale, "callback")
-                    embed = createembed.playnolplaylist(interaction, self.bot, respound)
+                    respound = get_respound(interaction.locale, "playnolplaylist")
+                    embed = createembed.embed_fail(interaction, respound)
                     await interaction.followup.send(embed=embed)
                     return
                 first = None
@@ -858,8 +841,8 @@ class music(commands.Cog):
                 )
                 return
             else:
-                respound = get_respound(interaction.locale, "callback")
-                embed = createembed.noviplplaylist(interaction, self.bot, respound)
+                respound = get_respound(interaction.locale, "viponly")
+                embed = createembed.embed_fail(interaction, respound)
                 await interaction.followup.send(embed=embed)
                 return
         yt = False
@@ -868,7 +851,8 @@ class music(commands.Cog):
             search = search.replace("onlytube", "")
         track = await createsource.searchen(self, search, interaction.user, onlyyt=yt)
         if track == None:
-            embed = createembed.noresult(interaction, self.bot, respound)
+            respound = get_respound(interaction.locale, "noresult")
+            embed = createembed.embed_fail(interaction, respound)
             await interaction.followup.send(embed=embed)
             return
         
@@ -1018,9 +1002,7 @@ class music(commands.Cog):
                     await self.nosong(interaction)
             except:
                 await self.cleanup(interaction.guild, "trackend")
-                embed = createembed.on_wavelink_track_end(
-                    vc.interaction, self.bot, respound
-                )
+                embed = createembed.embed_info(vc.interaction, respound)
                 try:
                     d = await interaction.followup.send(embed=embed)
                     await asyncio.sleep(5)
@@ -1198,7 +1180,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1216,7 +1198,7 @@ class music(commands.Cog):
                 lo.style = discord.ButtonStyle.green
             await nowplaying.np(self, interaction)
             respound = get_respound(interaction.locale, "loop")
-            embed = createembed.loop(interaction, self.bot, respound,trans_queueMode[status])
+            embed = createembed.embed_success(interaction, respound,trans_queueMode[status])
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1226,7 +1208,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1239,7 +1221,7 @@ class music(commands.Cog):
             re.emoji = "<a:1_:989120454063185940>"
             await vc.pause(False)
             respound = get_respound(interaction.locale, "resume")
-            embed = createembed.resume(interaction, self.bot, respound)
+            embed = createembed.embed_success(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1249,7 +1231,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1264,7 +1246,7 @@ class music(commands.Cog):
             await vc.pause(True)
             await nowplaying.np(self, interaction)
             respound = get_respound(interaction.locale, "pause")
-            embed = createembed.pause(interaction, self.bot, respound)
+            embed = createembed.embed_success(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1275,7 +1257,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1284,20 +1266,22 @@ class music(commands.Cog):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
             if to:
+                respound = get_respound(interaction.locale, "skipto")
                 if to > len(vc.queue):
-                    await interaction.followup.send("there is no queue index you provided.",ephemeral=True)
+                    embed = createembed.embed_fail(interaction, respound)
+                    await interaction.followup.send(embed=embed)
+                    return
                 wanted = vc.queue[to-1]
                 await vc.queue.delete(to-1)
                 await vc.play(wanted)
-                respound = get_respound(interaction.locale, "skip")
-                embed = createembed.skipto(interaction, self.bot, to, respound)
+                embed = createembed.embed_success(interaction, respound,to)
                 d = await interaction.followup.send(embed=embed)
                 await asyncio.sleep(5)
                 await d.delete()
             else:
                 await vc.skip()
                 respound = get_respound(interaction.locale, "skip")
-                embed = createembed.skip(interaction, self.bot, respound)
+                embed = createembed.embed_success(interaction, respound)
                 d = await interaction.followup.send(embed=embed)
                 await asyncio.sleep(5)
                 await d.delete()
@@ -1308,7 +1292,7 @@ class music(commands.Cog):
         vc: wavelink.Player = interaction.guild.voice_client
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_success(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1318,7 +1302,7 @@ class music(commands.Cog):
             vc.interaction = interaction
             vc.queue.shuffle()
             respound = get_respound(interaction.locale, "shuffle")
-            embed = createembed.shuffle(interaction, self.bot, respound)
+            embed = createembed.embed_success(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1330,7 +1314,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1340,7 +1324,7 @@ class music(commands.Cog):
             vc.interaction = interaction
             await self.cleanup(interaction.guild, "dc")
             respound = get_respound(interaction.locale, "dc")
-            embed = createembed.dc(interaction, self.bot, respound)
+            embed = createembed.embed_success(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1351,7 +1335,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1368,7 +1352,7 @@ class music(commands.Cog):
                 delete = vc.queue.peek(index-1)
                 vc.queue.delete(index-1)
             respound = get_respound(interaction.locale, "remove")
-            embed = createembed.remove(interaction, self.bot, delete, respound)
+            embed = createembed.embed_success(interaction, respound,delete)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1380,8 +1364,8 @@ class music(commands.Cog):
     ):
         if isinstance(error, app_commands.CommandInvokeError):
             await interaction.response.defer()
-            respound = get_respound(interaction.locale, "remove_error")
-            erembed = createembed.remove(interaction, self.bot, respound)
+            respound = get_respound(interaction.locale, "remove")
+            erembed = createembed.embed_fail(interaction, respound)
             await interaction.followup.send(embed=erembed)
 
     @app_commands.command(name="queue", description="Send queuelist")
@@ -1389,7 +1373,7 @@ class music(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale, "baned")
-            embed = createembed.baned(interaction, interaction.client, respound)
+            embed = createembed.embed_fail(interaction, respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -1540,12 +1524,8 @@ class music(commands.Cog):
                             pass
                     except asyncio.TimeoutError:
                         await self.cleanup(member.guild, "voiceupdate no one")
-                        respound = get_respound(
-                            lastone.guild.preferred_locale, "on_voice_state_update"
-                        )
-                        embed = createembed.on_voice_state_update2(
-                            lastone, self.bot, respound
-                        )
+                        respound = get_respound(lastone.guild.preferred_locale, "ononeleft")
+                        embed = createembed.embed_info(lastone, respound)
                         try:
                             d = await vc.interaction.followup.send(embed=embed)
                             await asyncio.sleep(5)

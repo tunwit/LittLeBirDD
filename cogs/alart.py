@@ -74,7 +74,7 @@ class alart(commands.Cog):
         await interaction.response.defer()
         if await self.check_ban(interaction.user.id):
             respound = get_respound(interaction.locale,"baned")
-            embed = createembed.baned(interaction,interaction.client,respound)
+            embed = createembed.embed_fail(interaction,respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -86,7 +86,7 @@ class alart(commands.Cog):
             datetime_object = datetime.strptime(date_string, input_format)
         except ValueError:
             respound = get_respound(interaction.locale,"invalid_format")
-            embed = createembed.invalid_format(interaction,interaction.client,respound)
+            embed = createembed.embed_fail(interaction,respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -94,7 +94,7 @@ class alart(commands.Cog):
 
         if datetime.now() > datetime_object:
             respound = get_respound(interaction.locale,"invalid_format")
-            embed = createembed.foretime(interaction,interaction.client,respound)
+            embed = createembed.embed_fail(interaction,respound)
             d = await interaction.followup.send(embed=embed)
             await asyncio.sleep(5)
             await d.delete()
@@ -110,8 +110,9 @@ class alart(commands.Cog):
             'time':datetime_object,
             'channel_id':channel
              })
-        respound = get_respound(interaction.locale,"reminder")
-        embed = createembed.set_reminder_com(interaction,interaction.client,respound,_time=datetime_object,message=message)
+        form = f'{datetime_object} {message}'
+        respound = get_respound(interaction.locale,"set_reminder")
+        embed = createembed.embed_success(interaction,respound,form)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()

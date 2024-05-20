@@ -33,7 +33,7 @@ class trackAPI(commands.Cog):
               "guild_id":str(interaction.guild.id),
               "text_channel":str(channel.id)
           })
-          embed = createembed.set_track(interaction,self.bot,respound,channel.name)
+          embed = createembed.embed_success(interaction,respound,channel.name)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()
@@ -41,7 +41,7 @@ class trackAPI(commands.Cog):
           respound = get_respound(interaction.locale,f"unset_track")
           if database.find_one({"guild_id":str(interaction.guild.id)}) != None:
             database.delete_one({"guild_id":str(interaction.guild.id)})
-          embed = createembed.set_track(interaction,self.bot,respound,channel.name)
+          embed = createembed.embed_success(interaction,respound,channel.name)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()

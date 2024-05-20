@@ -56,21 +56,22 @@ class customplaylistAPI(commands.Cog):
       await interaction.response.defer()
       if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
         return
-      respound = get_respound(interaction.locale,"addplaylist")
       if not await self.check_vip(interaction.user.id):
-        embed = createembed.addplaylistnovip(interaction,interaction.client,respound)
+        respound = get_respound(interaction.locale,"viponly")
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete() 
         return
+      respound = get_respound(interaction.locale,"addplaylist")
       source = await createsource.searchen(self,search,interaction.user)
       if source == None:
-        embed = createembed.addplaylistnoresult(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
@@ -94,10 +95,10 @@ class customplaylistAPI(commands.Cog):
         database.update_one({'user_id':user},{'$set':{f'playlist.{name}':link}})
 
       if playlist:
-        embed = createembed.addplaylistsuccess(interaction,interaction.client,respound,source.tracks[0].title)
+        embed = createembed.embed_success(interaction,respound,source.tracks[0].title)
         embed.set_thumbnail(url = source.tracks[0].artwork)
       else:
-        embed = createembed.addplaylistsuccess(interaction,interaction.client,respound,source.title)
+        embed = createembed.embed_success(interaction,respound,source.title)
         embed.set_thumbnail(url = source.artwork)
       await self.statistic(search)
       d = await interaction.followup.send(embed=embed)
@@ -118,7 +119,7 @@ class customplaylistAPI(commands.Cog):
       await interaction.response.defer()
       if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
@@ -128,7 +129,7 @@ class customplaylistAPI(commands.Cog):
       respound = get_respound(interaction.locale,"ql_playlist")
       if await self.check_vip(interaction.user.id):
         if not data:
-          embed = createembed.ql_playlistnolist(interaction,interaction.client,respound)
+          embed = createembed.embed_fail(interaction,respound)
           d = await interaction.followup.send(embed=embed)
           await asyncio.sleep(5)
           await d.delete()  
@@ -160,7 +161,8 @@ class customplaylistAPI(commands.Cog):
         view.interaction=interaction
         await interaction.followup.send(embed = pag[0],view=view)
         return
-      embed = createembed.ql_playlistnovip(interaction,interaction.client,respound)
+      respound = get_respound(interaction.locale,"viponly")
+      embed = createembed.embed_fail(interaction,respound)
       d = await interaction.followup.send(embed=embed)
       await asyncio.sleep(5)
       await d.delete()   
@@ -171,14 +173,15 @@ class customplaylistAPI(commands.Cog):
       await interaction.response.defer()
       if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
         return
       respound = get_respound(interaction.locale,"remove_playlist")
       if not await self.check_vip(interaction.user.id):
-        embed = createembed.remove_playlistnovip(interaction,interaction.client,respound)
+        respound = get_respound(interaction.locale,"viponly")
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()  
@@ -186,12 +189,12 @@ class customplaylistAPI(commands.Cog):
       database = self.bot.mango['lplaylist']
       data = database.find_one({'user_id':str(interaction.user.id)})
       if not data:
-        embed = createembed.remove_playlistnolist(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()     
         return
-      embed = createembed.remove_playlistsuccess(interaction,interaction.client,respound,list(data['playlist'].keys())[number-1].replace(self.replacer, self.replacement))
+      embed = createembed.embed_success(interaction,respound,list(data['playlist'].keys())[number-1].replace(self.replacer, self.replacement))
       database.update_one({'user_id':str(interaction.user.id)}, {"$unset": {f"playlist.{list(data['playlist'].keys())[number-1]}": ""}})
       d = await interaction.followup.send(embed=embed)
       await asyncio.sleep(5)
@@ -204,21 +207,22 @@ class customplaylistAPI(commands.Cog):
       await interaction.response.defer()
       if await self.check_ban(interaction.user.id):
         respound = get_respound(interaction.locale,"baned")
-        embed = createembed.baned(interaction,interaction.client,respound)
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete()
         return
-      respound = get_respound(interaction.locale,"clear_playlist")
       if not await self.check_vip(interaction.user.id):
-        embed = createembed.clear_playlistfailed(interaction,interaction.client,respound)
+        respound = get_respound(interaction.locale,"viponly")
+        embed = createembed.embed_fail(interaction,respound)
         d = await interaction.followup.send(embed=embed)
         await asyncio.sleep(5)
         await d.delete() 
         return
+      respound = get_respound(interaction.locale,"clear_playlist")
       database = self.bot.mango['lplaylist']
       data = database.find_one({'user_id':str(interaction.user.id)})
-      embed = createembed.clear_playlistsuccess(interaction,interaction.client,respound)
+      embed = createembed.embed_success(interaction,respound)
       database.delete_one({'user_id':str(interaction.user.id)})
       d = await interaction.followup.send(embed=embed)
       await asyncio.sleep(5)
