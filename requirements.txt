@@ -19,5 +19,5 @@ pymongo == 4.5.0
 google-api-python-client == 2.102.0
 portalocker == 2.8.2
 yt_dlp == 2023.10.7
-wavelink == 3.2.0
+wavelink == 3.3.0
 qrcode == 7.4.2

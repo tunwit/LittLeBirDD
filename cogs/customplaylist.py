@@ -68,7 +68,7 @@ class customplaylistAPI(commands.Cog):
         await asyncio.sleep(5)
         await d.delete() 
         return
-      source = await createsource.searchen(self,search,interaction)
+      source = await createsource.searchen(self,search,interaction.user)
       if source == None:
         embed = createembed.addplaylistnoresult(interaction,interaction.client,respound)
         d = await interaction.followup.send(embed=embed)

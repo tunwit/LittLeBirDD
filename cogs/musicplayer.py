@@ -872,7 +872,7 @@ class music(commands.Cog):
         if not vc.playing and not vc.queue:
             await vc.queue.put_wait(track)
             await vc.set_volume(100)
-            await vc.play(await vc.queue.get_wait())
+            await vc.play(await vc.queue.get_wait(),populate=True)
             logger.info(f"playing {vc.current} requested by {vc.current.extras.requester}")
         else:
             await vc.queue.put_wait(track)

@@ -14,9 +14,7 @@ class createsource(commands.Cog):
            return None
         if isinstance(result,wavelink.Playlist):
             if result.selected == -1:
-               result.track_extras()
-               for track in result.tracks:
-                  track.extras = {'requester': member.name,'requester_icon' : member.avatar.url}
+               result.extras = {'requester': member.name,'requester_icon' : member.avatar.url,"thumb":result.tracks[result.selected].artwork}
                song = result
             else:
               result.tracks[result.selected].extras = {'requester': member.name,'requester_icon' : member.avatar.url,"thumb":result.tracks[result.selected].artwork}
