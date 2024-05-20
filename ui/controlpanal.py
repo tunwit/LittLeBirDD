@@ -280,6 +280,7 @@ class au(Button):
         au = [x for x in vc.Myview.children if x.custom_id == "au"][0]
         if not await check_before_play(self.interaction):
             return
+
         if await self.check_vip(interaction.user.id):
             if vc.autoplay == wavelink.AutoPlayMode.partial:
                 vc.autoplay = wavelink.AutoPlayMode.enabled

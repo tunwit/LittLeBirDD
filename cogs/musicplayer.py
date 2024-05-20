@@ -639,18 +639,21 @@ class music(commands.Cog):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
             if await self.check_vip(interaction.user.id):
+                au = [x for x in vc.Myview.children if x.custom_id == "au"][0]
                 if vc.autoplay == wavelink.AutoPlayMode.partial:
                     vc.autoplay = wavelink.AutoPlayMode.enabled
+                    au.style = discord.ButtonStyle.green
                 elif vc.autoplay == wavelink.AutoPlayMode.enabled:
                     vc.autoplay = wavelink.AutoPlayMode.partial
-                await nowplaying.np(self, self.interaction)
+                    au.style = discord.ButtonStyle.gray
+                await nowplaying.np(self, interaction)
                 try:
                     await interaction.response.send_message(content="")
                 except:
                     pass
             else:
                 embed = createembed.callback(
-                    self.interaction, self.interaction.client, respound
+                    interaction, interaction.client, respound
                 )
                 await interaction.followup.send(embed=embed)
 
