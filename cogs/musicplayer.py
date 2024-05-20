@@ -635,11 +635,15 @@ class music(commands.Cog):
                 await nowplaying.np(self, interaction)
                 respound = get_respound(interaction.locale, "autoplay")
                 embed = createembed.embed_success(interaction, respound)
-                await interaction.followup.send(embed=embed)
+                d = await interaction.followup.send(embed=embed)
+                await asyncio.sleep(5)
+                await d.delete()
             else:
                 respound = get_respound(interaction.locale, "viponly")
                 embed = createembed.embed_fail(interaction, respound)
-                await interaction.followup.send(embed=embed)
+                d = await interaction.followup.send(embed=embed)
+                await asyncio.sleep(5)
+                await d.delete()
 
     def is_url(self,url):
         try:
