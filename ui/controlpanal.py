@@ -79,10 +79,10 @@ class pr(Button):
         vc.queue.mode = wavelink.QueueMode.normal
 
         
-        vc.queue._queue.insert(0,vc.queue.history[-1]) #insert current song
-        await vc.queue.history.delete(len(vc.queue.history)-1)#delete the current song
-        vc.queue._queue.insert(0,vc.queue.history[-1]) #insert previous song       
-        await vc.queue.history.delete(len(vc.queue.history)-1) #delete the previous song
+        vc.queue.put_at(0,vc.queue.history[-1]) #insert current song
+        vc.queue.history.delete(len(vc.queue.history)-1)#delete the current song
+        vc.queue.put_at(0,vc.queue.history[-1]) #insert previous song       
+        vc.queue.history.delete(len(vc.queue.history)-1) #delete the previous song
         await vc.skip() #play previous song
 
         vc.queue.mode = pre_queuemode

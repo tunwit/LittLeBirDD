@@ -1276,8 +1276,9 @@ class music(commands.Cog):
                     await interaction.followup.send(embed=embed)
                     return
                 wanted = vc.queue[to-1]
-                await vc.queue.delete(to-1)
-                await vc.play(wanted)
+                vc.queue.delete(to-1)
+                vc.queue.put_at(0,wanted)
+                await vc.skip()
                 embed = createembed.embed_success(interaction, respound,to)
                 d = await interaction.followup.send(embed=embed)
                 await asyncio.sleep(5)
