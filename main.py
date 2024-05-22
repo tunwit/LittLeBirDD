@@ -175,7 +175,8 @@ async def on_ready():
     change_ac.start()
     await check_database_avaliable()
     await node_connect()
-    aioschedule.every().days.at(bot.config["restart_at"]).do(temporary_cooling)
+    if bot.config["restart"]:                        
+        aioschedule.every().days.at(bot.config["restart_at"]).do(temporary_cooling)
     pending.start()
     logger.info("-------------------------------")
     logger.info(f"{bot.user} is Ready")
