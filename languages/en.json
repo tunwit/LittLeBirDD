@@ -318,7 +318,7 @@
     },
     "unset_track":{
         "success_title":"Successful ✅",
-        "success_description":"``{channel}`` will no longer recived welcome message when member join or leave vc"
+        "success_description":"``{}`` will no longer recived welcome message when member join or leave vc"
     },
     "trackvc":{
         "join":"✅ **{user}** Joined ``🔊 {channel}``",

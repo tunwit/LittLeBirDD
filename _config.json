@@ -1,8 +1,9 @@
 {
-    "model":"main",
+    "model":"test",
     "main":{
         "defualt_prefix" : ".", 
         "defualt_lang" : "en", 
+        "restart":false,
         "restart_at":"02:00",
         "restart_duration":900,
         "nosongtime":30,
@@ -11,7 +12,8 @@
     "test":{
         "defualt_prefix" : ".", 
         "defualt_lang" : "en", 
-        "restart_at":"02:00",
+        "restart":true,
+        "restart_at":"17:28",
         "restart_duration":900,
         "nosongtime":30,
         "alonetime":25
