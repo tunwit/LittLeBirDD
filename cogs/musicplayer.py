@@ -811,9 +811,9 @@ class music(commands.Cog):
             # vc.Myview.add_item(volup)
             # vc.Myview.add_item(clear)
             vc.Myview.add_item(disconnect)
+            vc.autoplay = wavelink.AutoPlayMode.partial
 
         vc.interaction = interaction
-        vc.autoplay = wavelink.AutoPlayMode.partial
         # -------Lplaylist
         if search == "Lplaylist":
             if await self.check_vip(interaction.user.id):
