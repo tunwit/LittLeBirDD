@@ -19,6 +19,7 @@ import sys
 import asyncio
 import itertools
 from logging.handlers import TimedRotatingFileHandler
+import winsound
 
 logger = logging.getLogger('littlebirdd')
 from config import CONFIG,MODEL,TOKEN,APPLICATION_ID,MONGO,CLIENT_ID,CLIENT_SECRET,LAST_API_KEY,LAST_API_SECRET,LAST_USERNAME,LAST_PASSWORD
@@ -61,12 +62,6 @@ class LittLeBirDD(commands.Bot):
         self.model = MODEL
         self.config = CONFIG
         self.mango = MongoClient(MONGO)["Main"]
-        self.spotify_client = spotipy.Spotify(
-            auth_manager=SpotifyClientCredentials(
-                client_id=CLIENT_ID,
-                client_secret=CLIENT_SECRET,
-            )
-        )
         self.last = pylast.LastFMNetwork(
             api_key=LAST_API_KEY,
             api_secret=LAST_API_SECRET,
@@ -178,6 +173,7 @@ async def on_ready():
     if bot.config["restart"]:                        
         aioschedule.every().days.at(bot.config["restart_at"]).do(temporary_cooling)
     pending.start()
+    winsound.PlaySound('audio/ready.wav',winsound.SND_FILENAME)
     logger.info("-------------------------------")
     logger.info(f"{bot.user} is Ready")
     logger.info("-------------------------------")
@@ -220,10 +216,9 @@ async def reload(ctx, extension):
         await ctx.send(f"Extension`{extension}`load suscessful!!", delete_after=5)
 
 
-if __name__ == "__main__":
-    bot.run(TOKEN,log_level=logging.ERROR)
-    if close_by_cooling:
-        logger.info("restarting")
-        time.sleep(bot.config["restart_duration"])
-        os.system("cls")
-        os.execv(sys.executable, ["python"] + sys.argv)
+bot.run(TOKEN,log_level=logging.ERROR)
+if close_by_cooling:
+    logger.info("restarting")
+    time.sleep(bot.config["restart_duration"])
+    os.system("cls")
+    os.execv(sys.executable, ["python"] + sys.argv)
