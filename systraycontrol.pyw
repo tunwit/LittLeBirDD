@@ -63,5 +63,6 @@ started_menu = pystray.Menu(
 
 icon = pystray.Icon(name="LittLeBirDD",icon=iconimage,title="Example",menu=closed_menu)
 
+winsound.PlaySound('audio\init.wav',winsound.SND_FILENAME)
 icon.run()
 

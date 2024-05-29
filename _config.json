@@ -1,5 +1,5 @@
 {
-    "model":"main",
+    "model":"test",
     "main":{
         "defualt_prefix" : ".", 
         "defualt_lang" : "en", 

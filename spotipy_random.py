@@ -2,7 +2,6 @@ from spotipy import Spotify
 from typing import Any, Optional
 import random
 
-
 def get_wildcard(genre) -> str:
     if genre == "Thai":
       alphabet = "กขคงจฉชซญฏฎฐฒณดตถทธนบปผฝพฟภมยรลวศษสหอฮะา"
