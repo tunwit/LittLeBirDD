@@ -155,8 +155,6 @@ class nowplaying:
                             content = f'**{respound.get("queue")}:**\n{fmt}'f'\n{more}' if more else f'**{respound.get("queue")}:**\n{fmt}'
                             vc.np = await vc.interaction.followup.send(content=content, embed=npembed,view=vc.Myview,file=file)
                         return vc.np
-                
-
 
 class music(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -776,6 +774,9 @@ class music(commands.Cog):
 
     async def current_time(self, interaction):
         vc: wavelink.Player = interaction.guild.voice_client
+        try:
+            await vc.np.delete()
+        except:pass
         vc.np = None
         while True:
             vc: wavelink.Player = interaction.guild.voice_client
