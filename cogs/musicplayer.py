@@ -1361,10 +1361,23 @@ class music(commands.Cog):
             vc.interaction = interaction
             delete = None
             if vc.queue.mode == wavelink.QueueMode.loop_all:
-                if index >len(vc.queue):
+                if index > (vc.queue.count+vc.queue.history.count):#Index out of range handler
+                    respound = get_respound(interaction.locale, "remove")
+                    erembed = createembed.embed_fail(interaction, respound)
+                    await interaction.followup.send(embed=erembed)
+                    return
+                if index > vc.queue.count: 
                     delete = vc.queue.history.peek(index-len(vc.queue)-1)
                     vc.queue.history.delete(index-len(vc.queue)-1)
+                else:
+                    delete = vc.queue.peek(index-1)
+                    vc.queue.delete(index-1)
             else:
+                if index > vc.queue.count: #Index out of range handler
+                    respound = get_respound(interaction.locale, "remove")
+                    erembed = createembed.embed_fail(interaction, respound)
+                    await interaction.followup.send(embed=erembed)
+                    return
                 delete = vc.queue.peek(index-1)
                 vc.queue.delete(index-1)
             respound = get_respound(interaction.locale, "remove")

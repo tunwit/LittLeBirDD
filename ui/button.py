@@ -35,7 +35,9 @@ class buttin(View):
         i.disabled = False
 
   async def on_timeout(self):
-    await self.interaction.delete_original_response()
+    try:
+      await self.interaction.delete_original_response()
+    except:pass
     self.stop()
     
   async def respounded(self,page:int,interaction:discord.Interaction):
