@@ -219,7 +219,7 @@ class nowplaying:
                         name=f"{respound.get('duration')}", value=f"`{duration}`"
                     )
                     npembed.set_footer(
-                        text=f"{'Paused'if not vc.playing else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
+                        text=f"{'Paused'if vc.paused else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
                     )
                     npembed.set_thumbnail(url=vc.current.artwork)
                     more = f"`{respound.get('andmore').format(more=len(vc.queue)-4)}`"
@@ -281,7 +281,7 @@ class nowplaying:
                         name=f"{respound.get('duration')}", value=f"`{duration}`"
                     )
                     npembed.set_footer(
-                        text=f"{'Paused'if not vc.playing else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
+                        text=f"{'Paused'if vc.paused else 'Playing'} | {vc.volume}% | LoopStatus:{trans_queueMode[f'wavelink.{str(vc.queue.mode)}']} | Autoplay:{trans_autoMode[f'wavelink.{str(vc.autoplay)}']}"
                     )
                     npembed.set_thumbnail(url=vc.current.artwork)
                     more = f"`{respound.get('andmore').format(more=len(vc.queue)-4)}`"
@@ -604,7 +604,11 @@ class music(commands.Cog):
         if await self.check_before_play(interaction):
             vc: wavelink.Player = interaction.guild.voice_client
             vc.interaction = interaction
-            await nowplaying.np(self, interaction, send=True)
+            try:
+                vc.task.cancel() # To prevent bot from send Nowplaying message twice
+            except:
+                pass
+            vc.task = self.bot.loop.create_task(self.current_time(vc.interaction))
 
     @app_commands.command(
         name="autoplay",
@@ -938,20 +942,26 @@ class music(commands.Cog):
 
     async def current_time(self, interaction):
         vc: wavelink.Player = interaction.guild.voice_client
+        vc.np = None
         while True:
+            vc: wavelink.Player = interaction.guild.voice_client
+            if interaction.is_expired():
+                try:
+                    vc.task.cancel()
+                except:pass
+            elif not interaction.is_expired() and vc.task.cancelled(): # resume update nowplaying after get new interaction
+                vc.task = self.bot.loop.create_task(self.current_time(vc.interaction))
             try:
-                vc: wavelink.Player = vc.interaction.guild.voice_client
                 np = await nowplaying.np(self,interaction)
-                setattr(self.bot, "inter", interaction)
-                setattr(self.bot, "re_np", np)
-                await asyncio.sleep(9)
-                if vc == None:
-                    break
-                if vc.np == None:
-                    break
-            except Exception as e:
-                pass
+            except discord.errors.NotFound as e:
+                break
+            if vc == None:
+                break
+            if vc.np == None:
+                break
+            await asyncio.sleep(9)
             await asyncio.sleep(1)
+        vc.task.cancel()
 
     # --------------------------------
 
@@ -982,6 +992,7 @@ class music(commands.Cog):
         if not dict(vc.current.extras).get('requester',None):
             vc.current.extras = {'requester': 'Recommended','requester_icon' : payload.player.client.user.avatar.url}
         logger.info(f"Now playing : {vc.current}")
+        await asyncio.sleep(0.3)
         vc.task = self.bot.loop.create_task(self.current_time(vc.interaction))
 
     @commands.Cog.listener()
