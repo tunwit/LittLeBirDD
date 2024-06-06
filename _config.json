@@ -3,6 +3,7 @@
     "main":{
         "defualt_prefix" : ".", 
         "defualt_lang" : "en", 
+        "local_lavalink":true,
         "restart":false,
         "restart_at":"02:00",
         "restart_duration":900,
@@ -12,6 +13,7 @@
     "test":{
         "defualt_prefix" : ".", 
         "defualt_lang" : "en", 
+        "local_lavalink":false,
         "restart":true,
         "restart_at":"17:28",
         "restart_duration":900,

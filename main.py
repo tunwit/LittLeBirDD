@@ -22,7 +22,7 @@ from logging.handlers import TimedRotatingFileHandler
 import winsound
 
 logger = logging.getLogger('littlebirdd')
-from config import CONFIG,MODEL,TOKEN,APPLICATION_ID,MONGO,CLIENT_ID,CLIENT_SECRET,LAST_API_KEY,LAST_API_SECRET,LAST_USERNAME,LAST_PASSWORD
+from config import CONFIG,MODEL,TOKEN,APPLICATION_ID,MONGO,CLIENT_ID,CLIENT_SECRET,LAST_API_KEY,LAST_API_SECRET,LAST_USERNAME,LAST_PASSWORD,LOCAL_LAVALINK
 
 DATABASE = [
     "customrandom",
@@ -138,10 +138,22 @@ async def change_profile():
                                     pass
 
 async def node_connect(): 
-    node1 = wavelink.Node(uri ='http://n1.ll.darrennathanael.com:2269', password="glasshost1984")
-    # node2 = wavelink.Node(uri ='http://lavalink.rudracloud.com:2333', password="RudraCloud.com")
-    # node3 = wavelink.Node(uri ='http:/localhost:2333', password="youshallnotpass")
-    await wavelink.Pool.connect(client=bot, nodes=[node1])
+    if LOCAL_LAVALINK:
+        node = wavelink.Node(uri ='http://localhost:2333', password="youshallnotpass",retries=1) # Local Lavalink server
+    else:
+        node = wavelink.Node(uri ='http://n1.ll.darrennathanael.com:2269', password="glasshost1984") # prefered Lavalink server
+        # node2 = wavelink.Node(uri ='http://lavalink.rudracloud.com:2333', password="RudraCloud.com") # reserve Lavalink server
+    
+    connection = await wavelink.Pool.connect(client=bot, nodes=[node])
+    if connection[list(connection)[0]].status == wavelink.NodeStatus.DISCONNECTED:
+        if LOCAL_LAVALINK:
+            winsound.PlaySound(f'audio/connect_to_Lava.wav',winsound.SND_FILENAME)
+            logger.critical(f"Unable to connect Lavalink, Make sure you have start Lavalink server via start_lavalink.bat")
+            sys.exit("Unable to connect Lavalink")
+        else :
+            winsound.PlaySound(f'audio/cannotconnect_contact.wav',winsound.SND_FILENAME)
+            logger.critical(f"Unable to connect Lavalink")
+            sys.exit("Unable to connect Lavalink")
 
 async def check_database_avaliable():
     for collection in DATABASE:
@@ -149,7 +161,6 @@ async def check_database_avaliable():
         if collection not in alreadyhave:
             bot.mango.create_collection(collection)
             logger.info(f'Create new collaction named "{collection}"')
-
 
 async def temporary_cooling():
     logger.info("bot closing")
@@ -173,10 +184,10 @@ async def on_ready():
     if bot.config["restart"]:                        
         aioschedule.every().days.at(bot.config["restart_at"]).do(temporary_cooling)
     pending.start()
-    winsound.PlaySound('audio/ready.wav',winsound.SND_FILENAME)
     logger.info("-------------------------------")
     logger.info(f"{bot.user} is Ready")
     logger.info("-------------------------------")
+    winsound.PlaySound('audio/ready.wav',winsound.SND_FILENAME)
 
 
 @bot.event
